@@ -1,19 +1,21 @@
 <template>
-    <div>
-        {{ title }} - {{ created_on }}
-        <WorkoutExercise v-for="line in exerciseList" 
-        :key="line"
-        :reps="line.reps"
-        :sets="line.sets"/>
-    </div>
+    <section>
+        <div id="workout-container">
+            {{ title }} - {{ created_on }} - {{ completed }}
+            <WorkoutExerciseView v-for="line in exerciseList" 
+            :key="line"
+            :reps="line.reps"
+            :sets="line.sets"/>
+        </div>
+    </section>
 </template>
 
 <script>
-import WorkoutExercise from './WorkoutExercise.vue'
+import WorkoutExerciseView from '../views/WorkoutExerciseView.vue'
     export default {
         name: 'Workout',
         components: {
-            WorkoutExercise
+            WorkoutExerciseView
         },
         data: () => {
             return {
@@ -44,6 +46,9 @@ import WorkoutExercise from './WorkoutExercise.vue'
     }
 </script>
 
-<style scoped>
-
+<style lang="scss" scoped>
+    #workout-container {
+        display: grid;
+        grid-template-columns: 1.2fr .8fr .8fr;
+    }
 </style>

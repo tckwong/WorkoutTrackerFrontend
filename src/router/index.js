@@ -5,6 +5,7 @@ import DashboardView from '../views/DashboardView.vue'
 import WeekSplitView from '../views/WeekSplitView.vue'
 import UserLoginView from '../views/UserLoginView.vue'
 import UserRegistrationView from '../views/UserRegistrationView.vue'
+import WorkoutExerciseView from '../views/WorkoutExerciseView.vue'
 
 Vue.use(VueRouter)
 
@@ -34,8 +35,12 @@ const routes = [
     name: 'UserRegistrationView',
     component: UserRegistrationView
   },
+  {
+    path: '/WorkoutExerciseView',
+    name: 'WorkoutExerciseView',
+    component: WorkoutExerciseView
+  },
 ]
-
 
 const router = new VueRouter({
   mode: 'history',
