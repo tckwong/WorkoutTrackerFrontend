@@ -1,18 +1,18 @@
 <template>
     <div>
         <Header/>
-        <WorkoutSplit/>
+        <WeekSplit/>
     </div> 
 </template>
 
 <script>
-import WorkoutSplit from '@/components/WorkoutSplit.vue'
+import WeekSplit from '@/components/WeekSplit.vue'
 import Header from '@/components/Header.vue'
     export default {
-        name: 'WorkoutSplitView',
+        name: 'WeekSplitView',
         components: {
             Header,
-            WorkoutSplit
+            WeekSplit
         },
 
     }   

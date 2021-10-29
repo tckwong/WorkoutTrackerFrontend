@@ -1,7 +1,6 @@
 <template>
     <div>
-        <h1>Workout Page</h1>
-        <b-button @click="addExercise" pill variant="outline-danger">ADD EXERCISE</b-button>
+        {{ title }} - {{ created_on }}
         <WorkoutExercise v-for="line in exerciseList" 
         :key="line"
         :reps="line.reps"
@@ -21,6 +20,13 @@ import WorkoutExercise from './WorkoutExercise.vue'
                 exerciseList : [],
                 exerciseLine : {}
             }
+        },
+        props: {
+            title : String,
+            created_on : String,
+            completed : Number,
+            completed_on : String,
+            userId : Number
         },
         methods: {
             incrementCounter() {

@@ -2,8 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import LoginView from '../views/LoginView.vue'
 import DashboardView from '../views/DashboardView.vue'
-import WorkoutView from '../views/WorkoutView.vue'
-import WorkoutSplitView from '../views/WorkoutSplitView.vue'
+import WeekSplitView from '../views/WeekSplitView.vue'
 import UserLoginView from '../views/UserLoginView.vue'
 import UserRegistrationView from '../views/UserRegistrationView.vue'
 
@@ -21,14 +20,9 @@ const routes = [
     component: DashboardView
   },
   {
-    path: '/WorkoutView',
-    name: 'WorkoutView',
-    component: WorkoutView
-  },
-  {
-    path: '/WorkoutSplitView',
-    name: 'WorkoutSplitView',
-    component: WorkoutSplitView
+    path: '/WeekSplitView',
+    name: 'WeekSplitView',
+    component: WeekSplitView
   },
   {
     path: '/UserLoginView',

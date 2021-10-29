@@ -1,5 +1,5 @@
 <template>
-    <section> 
+    <section>
         <b-form inline>
             <label class="sr-only">email</label>
             <b-form-input
@@ -7,10 +7,9 @@
             placeholder="email address"
             v-model="email"
             ></b-form-input>
-
             <label for="text-password">Password</label>
             <b-form-input
-            id="text-password" 
+            id="text-password"
             type="password" 
             v-model="password"
             aria-describedby="password-help-block"
@@ -24,11 +23,13 @@
             <b-form-checkbox class="mb-2 mr-sm-2 mb-sm-0">Remember me</b-form-checkbox>
             <b-button @click="loginUser" variant="primary">Save</b-button>
         </b-form>
+        
     </section> 
 </template>
 
 <script>
-import axios from "axios"
+import axios from 'axios'
+import cookies from 'vue-cookies'
 export default {
 
     name: 'UserLoginView',
@@ -53,12 +54,17 @@ export default {
 
             }).then((response) => {
                 console.log(response)
-                // this.$router.push({ name: 'UserLoginView' });
+                cookies.set('loginData', response.data, { expires: 1 });
+                this.$router.push({ name: 'WeekSplitView' });
                 
             }).catch((error) => {
                 console.error("There was an error with your api request: " + error);
             })
         },
     }
-    }   
+}   
 </script>
+<style lang="scss" scoped>
+
+
+</style>

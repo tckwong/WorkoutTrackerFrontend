@@ -3,7 +3,7 @@
         <section>
             <div class="flexContainer">
                 <img id="logo" src="@/assets/logo.png"/>
-                <b-button class="loginButton" pill variant="outline-danger">SIGN-UP</b-button>
+                <b-button @click="directToRegistrationPage" class="loginButton" pill variant="outline-danger">SIGN-UP</b-button>
                 <b-button @click="directToLoginPage" class="loginButton" pill variant="outline-danger">LOG IN</b-button>
             </div>
         </section>
@@ -19,7 +19,7 @@
         },
         data: () => {
             return {
-              
+
             }
         },
         computed: {
@@ -32,7 +32,7 @@
                  this.$router.push({ name: 'UserLoginView' });
             },
             directToRegistrationPage() {
-                 this.$router.push({ name: 'UserLoginView' });
+                 this.$router.push({ name: 'UserRegistrationView' });
             },
         },
 
