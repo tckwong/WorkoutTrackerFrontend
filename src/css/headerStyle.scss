@@ -1,11 +1,10 @@
-
 .wrapper .sidebar {
     background-color: #282121;
     width: 100vw;
     text-align: center;
     height: 8vh;
     overflow: auto;
-  }
+}
 ul {
     list-style-type: none;
 }
@@ -13,9 +12,9 @@ ul li {
     list-style-type: none;
     padding: 25px;
     border-bottom:1px solid rgba(255, 255, 255, 0.541);
-  }
+}
 
-  li:hover {
+li:hover {
     background-color: rgb(105, 95, 240);
 }
 .navLink {
@@ -23,32 +22,16 @@ ul li {
     color: rgb(191, 192, 197);
 }
 
-
 @media only screen and (min-width: 700px) {
-    #hamburgerMenu {
-        display: none;
+    li {
+        display: inline-block;
+        list-style-type: none;
+        color: rgb(51, 163, 66);
     }
-    #desktopVersion {
-        display: initial;
-        text-align: center;
-        color: blue;
-        ul {
-          list-style-type: none;
-          margin: 0;
-          padding: 0;
-          overflow: hidden;
-          background-color: #333333;
-        }
-     li {
-          display: inline-block;
-          list-style-type: none;
-          color: rgb(51, 163, 66);
-      }
-    }
+
     router-link {
         text-decoration: none;
     }
-    
     
     .navLink {
         color: white;
@@ -56,5 +39,6 @@ ul li {
         padding: 16px;
         text-decoration: none;
     }
+
 }
 

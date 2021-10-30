@@ -6,7 +6,7 @@
 
 <script>
     export default {
-        name: 'CurrentWorkoutChild',
+        name: 'WorkoutTemplateChild',
         props: {
             exerciseId : Number,
             exerciseName : String,

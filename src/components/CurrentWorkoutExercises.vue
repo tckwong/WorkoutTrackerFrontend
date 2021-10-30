@@ -41,7 +41,7 @@
 import axios from 'axios'
 import cookies from 'vue-cookies'
     export default {
-        name: 'ExerciseDetails',
+        name: 'CurrentWorkoutExercises',
         props: {
             exerciseId : Number,
             exerciseName : String,

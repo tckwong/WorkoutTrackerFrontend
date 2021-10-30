@@ -3,7 +3,7 @@
         <b-button @click="addBtnTgl = !addBtnTgl" variant="danger">ADD WORKOUT</b-button>
         <input v-if="addBtnTgl" type="text" v-model="newWorkoutTitle">
         <b-button @click="createWorkout" v-if="addBtnTgl" variant="outline-primary">Add</b-button>
-        <Workout v-for="workout in allWorkoutData" 
+        <WorkoutSplitChild v-for="workout in allWorkoutData" 
         :key="workout.workoutId"
         :workoutId="workout.workoutId"
         :title="workout.title"
@@ -20,12 +20,12 @@
 <script>
 import axios from 'axios'
 import cookies from 'vue-cookies'
-import Workout from './Workout.vue'
+import WorkoutSplitChild from './WorkoutSplitChild.vue'
 
     export default {
-        name: 'WeekSplit',
+        name: 'WorkoutSplitMain',
         components: {
-            Workout
+            WorkoutSplitChild
         },
         data: () => {
             return {

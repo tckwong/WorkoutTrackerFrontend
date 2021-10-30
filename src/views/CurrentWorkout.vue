@@ -1,31 +1,34 @@
 <template>
     <div>
-        <CurrentWorkoutChild v-for="exercise in exerciseList" 
+        <CurrentWorkoutExercises v-for="exercise in allExerciseData" 
         :key="exercise.exerciseId"
         :exerciseId="exercise.exerciseId"
         :exerciseName="exercise.exerciseName"
         :reps="exercise.reps"
         :sets="exercise.sets"
         :weight="exercise.weight"
+        :workoutTitle="exercise.workoutTitle"
+        @notifyParentDeleteExercise="retrieveExercises"
         />
-        <b-button variant="outline-success">START WORKOUT</b-button>
+        <button @click="addExercise" class="addExerciseBtn">Add Exercise</button>
     </div>
 </template>
 
 <script>
 import axios from 'axios'
 import cookies from 'vue-cookies'
-import CurrentWorkoutChild from '@/components/CurrentWorkoutChild.vue'
+import CurrentWorkoutExercises from '@/components/CurrentWorkoutExercises.vue'
 
     export default {
         name: 'CurrentWorkout',
         components: {
-            CurrentWorkoutChild
+            CurrentWorkoutExercises
         },
         data: () => {
             return {
-                exerciseList : [],
-                exerciseObj : {},
+                allExerciseData : [],
+                exerciseRow : {},
+                workoutId : null,
             }
         },
         methods: {
@@ -37,16 +40,21 @@ import CurrentWorkoutChild from '@/components/CurrentWorkoutChild.vue'
                         "workoutId" : this.$route.params.workout
                     }
                 }).then((response) => {
-                    for (let i=0; i<response.data.length; i++){
-                        this.exerciseObj = {
-                            exerciseName : response.data[i].exerciseName,
-                            sets : response.data[i].sets,
-                        }
-                        this.exerciseList.push(this.exerciseObj)
-                    }
+                    console.log(response)
+                    this.allExerciseData = response.data;
                 }).catch((error) => {
                     console.error("There was an error: " +error);
                 })
+            },
+
+            addExercise() {
+                this.exerciseRow = {
+                    exerciseName: null,
+                    reps : null,
+                    sets : null,
+                    weight : null,
+                }
+                this.allExerciseData.push(this.exerciseRow);
             },
             getMyCookies() {
                 const getCookie = cookies.get('loginData');
@@ -60,6 +68,7 @@ import CurrentWorkoutChild from '@/components/CurrentWorkoutChild.vue'
     }
 </script>
 
+
 <style lang="scss" scoped>
     .addExerciseBtn {
 	box-shadow:inset 0px 1px 0px 0px #f7c5c0;
@@ -70,6 +79,8 @@ import CurrentWorkoutChild from '@/components/CurrentWorkoutChild.vue'
 	display:inline-block;
 	cursor:pointer;
 	color:#ffffff;
+	font-family:Arial;
+	font-size:15px;
 	font-weight:bold;
 	padding:6px 24px;
 	text-decoration:none;

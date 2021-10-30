@@ -13,7 +13,7 @@
 <script>
     import '../css/general.scss'
     export default {
-        name: 'LoginPage',
+        name: 'Login',
         components: {
             
         },
@@ -29,10 +29,10 @@
         },
         methods: {
             directToLoginPage() {
-                 this.$router.push({ name: 'UserLoginView' });
+                 this.$router.push({ name: 'UserLogin' });
             },
             directToRegistrationPage() {
-                 this.$router.push({ name: 'UserRegistrationView' });
+                 this.$router.push({ name: 'UserRegistration' });
             },
         },
 

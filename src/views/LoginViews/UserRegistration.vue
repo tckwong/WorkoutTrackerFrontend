@@ -44,7 +44,7 @@
 <script>
 import axios from "axios"
 export default {
-    name: "UserRegistrationView",
+    name: "UserRegistration",
     data: () => {
             return {
                 email: '',

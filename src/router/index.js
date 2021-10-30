@@ -1,20 +1,20 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import LoginView from '../views/LoginView.vue'
+import Login from '../views/Login.vue'
 import DashboardView from '../views/DashboardView.vue'
 import WorkoutSplit from '../views/WorkoutSplit.vue'
-import UserLoginView from '../views/UserLoginView.vue'
-import UserRegistrationView from '../views/UserRegistrationView.vue'
-import ExerciseView from '../views/ExerciseView.vue'
+import UserLogin from '../views/LoginViews/UserLogin.vue'
+import UserRegistration from '../views/LoginViews/UserRegistration.vue'
 import CurrentWorkout from '../views/CurrentWorkout.vue'
+import WorkoutTemplate from '../views/WorkoutTemplate.vue'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '/',
-    name: 'LoginView',
-    component: LoginView
+    name: 'Login',
+    component: Login
   },
   {
     path: '/DashboardView',
@@ -27,24 +27,24 @@ const routes = [
     component: WorkoutSplit
   },
   {
-    path: '/UserLoginView',
-    name: 'UserLoginView',
-    component: UserLoginView
+    path: '/UserLogin',
+    name: 'UserLogin',
+    component: UserLogin
   },
   {
-    path: '/UserRegistrationView',
-    name: 'UserRegistrationView',
-    component: UserRegistrationView
-  },
-  {
-    path: '/ExerciseView/:workout',
-    name: 'ExerciseView',
-    component: ExerciseView
+    path: '/UserRegistration',
+    name: 'UserRegistration',
+    component: UserRegistration
   },
   {
     path: '/CurrentWorkout/:workout',
     name: 'CurrentWorkout',
     component: CurrentWorkout
+  },
+  {
+    path: '/WorkoutTemplate/:workout',
+    name: 'WorkoutTemplate',
+    component: WorkoutTemplate
   },
 ]
 
