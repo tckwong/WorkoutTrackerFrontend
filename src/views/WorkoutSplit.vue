@@ -9,7 +9,7 @@
 import WeekSplit from '@/components/WeekSplit.vue'
 import Header from '@/components/Header.vue'
     export default {
-        name: 'WeekSplitView',
+        name: 'WorkoutSplit',
         components: {
             Header,
             WeekSplit

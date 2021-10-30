@@ -2,10 +2,11 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import LoginView from '../views/LoginView.vue'
 import DashboardView from '../views/DashboardView.vue'
-import WeekSplitView from '../views/WeekSplitView.vue'
+import WorkoutSplit from '../views/WorkoutSplit.vue'
 import UserLoginView from '../views/UserLoginView.vue'
 import UserRegistrationView from '../views/UserRegistrationView.vue'
-import WorkoutExerciseView from '../views/WorkoutExerciseView.vue'
+import ExerciseView from '../views/ExerciseView.vue'
+import CurrentWorkout from '../views/CurrentWorkout.vue'
 
 Vue.use(VueRouter)
 
@@ -21,9 +22,9 @@ const routes = [
     component: DashboardView
   },
   {
-    path: '/WeekSplitView',
-    name: 'WeekSplitView',
-    component: WeekSplitView
+    path: '/WorkoutSplit',
+    name: 'WorkoutSplit',
+    component: WorkoutSplit
   },
   {
     path: '/UserLoginView',
@@ -36,9 +37,14 @@ const routes = [
     component: UserRegistrationView
   },
   {
-    path: '/WorkoutExerciseView/:workout',
-    name: 'WorkoutExerciseView',
-    component: WorkoutExerciseView
+    path: '/ExerciseView/:workout',
+    name: 'ExerciseView',
+    component: ExerciseView
+  },
+  {
+    path: '/CurrentWorkout/:workout',
+    name: 'CurrentWorkout',
+    component: CurrentWorkout
   },
 ]
 

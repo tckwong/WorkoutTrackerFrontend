@@ -1,6 +1,6 @@
 <template>
     <div>
-        <b-button @click="addBtnTgl = !addBtnTgl" variant="danger">+</b-button>
+        <b-button @click="addBtnTgl = !addBtnTgl" variant="danger">ADD WORKOUT</b-button>
         <input v-if="addBtnTgl" type="text" v-model="newWorkoutTitle">
         <b-button @click="createWorkout" v-if="addBtnTgl" variant="outline-primary">Add</b-button>
         <Workout v-for="workout in allWorkoutData" 
@@ -13,6 +13,7 @@
         :userId="workout.userId"
         @notifyParentDeleteWorkout="retrieveWorkouts"
         />
+        <h2>Current Workout</h2>
     </div>
 </template>
 

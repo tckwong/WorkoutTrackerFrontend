@@ -12,6 +12,7 @@
             <p>Sets:</p>
             <p>Weight:</p>
             <p>Completed:</p>
+            <b-button @click="deleteExercise">X</b-button>
             <b-col class="inputBoxWidth" sm="2">
                 <b-form-input v-model="reps" placeholder="0"></b-form-input>
             </b-col>
@@ -29,6 +30,7 @@
                 unchecked-value="not_accepted"
                 >
             </b-form-checkbox>
+            
             <!-- <b-card-text></b-card-text> -->
         </div>
         </b-card>
@@ -36,6 +38,8 @@
 </template>
 
 <script>
+import axios from 'axios'
+import cookies from 'vue-cookies'
     export default {
         name: 'ExerciseDetails',
         props: {
@@ -45,14 +49,42 @@
             sets : Number,
             weight : Number,
 
-        }
+        },
+        methods: {
+            deleteExercise() {
+                axios.request({
+                    url: `${process.env.VUE_APP_BASE_DOMAIN}/api/exercises`,
+                    method: 'DELETE',
+                    headers:{
+                        'Content-Type': 'application/json'
+                    },
+                    data: {
+                        "loginToken" : this.userToken,
+                        "exerciseId" : this.exerciseId,
+                    }
+                }).then(() => {
+                    this.$emit('notifyParentDeleteExercise');
+
+                }).catch((error) => {
+                    console.error("There was an error: " +error);
+                })
+            },
+            getMyCookies() {
+                var getCookie = cookies.get('loginData');
+                this.userToken = getCookie.loginToken;
+                
+            },
+        },
+        mounted() {
+            this.getMyCookies();
+        },
     }
 </script>
 
 <style lang="scss" scoped>
     .grid-container {
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(5, 1fr);
         grid-template-rows: repeat(2, 1fr);
     }
     .inputBoxWidth {

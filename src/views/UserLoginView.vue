@@ -55,7 +55,7 @@ export default {
             }).then((response) => {
                 console.log(response)
                 cookies.set('loginData', response.data, { expires: 1 });
-                this.$router.push({ name: 'WeekSplitView' });
+                this.$router.push({ name: 'WorkoutSplit' });
                 
             }).catch((error) => {
                 console.error("There was an error with your api request: " + error);

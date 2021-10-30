@@ -8,6 +8,7 @@
         :sets="exercise.sets"
         :weight="exercise.weight"
         :workoutTitle="exercise.workoutTitle"
+        @notifyParentDeleteExercise="retrieveExercises"
         />
         <button @click="addExercise" class="addExerciseBtn">Add Exercise</button>
     </div>
@@ -56,7 +57,7 @@ import ExerciseDetails from '@/components/ExerciseDetails.vue'
                     sets : null,
                     weight : null,
                 }
-                this.allExerciseData.unshift(this.exerciseRow);
+                this.allExerciseData.push(this.exerciseRow);
             },
             getMyCookies() {
                 const getCookie = cookies.get('loginData');

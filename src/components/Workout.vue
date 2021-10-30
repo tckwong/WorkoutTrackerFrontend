@@ -1,7 +1,7 @@
 <template>
     <section>
         <div id="workout-container">
-            <p><router-link class="routerLink" :to="{ name: 'WorkoutExerciseView', params: { workout: workoutId }}">{{ workoutId }} Name: {{ title }} - Created: {{ created_on }} - Completion: {{ completed }}</router-link></p>
+            <p><router-link class="routerLink" :to="{ name: 'CurrentWorkout', params: { workout: workoutId }}">{{ workoutId }} Name: {{ title }} - Created: {{ created_on }} - Completion: {{ completed }}</router-link></p>
             <b-dropdown id="dropdown-right" right text=""  class="m-md-2">
                 <b-dropdown-item @click="deleteWorkout">Delete</b-dropdown-item>
             </b-dropdown>
@@ -12,8 +12,10 @@
 <script>
 import axios from 'axios'
 import cookies from 'vue-cookies'
+
     export default {
         name: 'Workout',
+
         data: () => {
             return {
                 exerciseList : [],
@@ -42,24 +44,15 @@ import cookies from 'vue-cookies'
                         "workoutId" : this.workoutId,
                     }
                 }).then(() => {
-                    this.$emit('notifyParentDeleteWorkout', "");
+                    this.$emit('notifyParentDeleteWorkout');
 
                 }).catch((error) => {
                     console.error("There was an error: " +error);
                 })
             },
-            addExercise() {
-                this.exerciseLine = {
-                    reps : "",
-                    sets : "",
-
-                }
-                this.exerciseList.unshift(this.exerciseLine);
-            },
             getMyCookies() {
                 var getCookie = cookies.get('loginData');
                 this.userToken = getCookie.loginToken;
-                
             },
         },
         mounted() {
