@@ -36,7 +36,7 @@ const routes = [
     component: UserRegistrationView
   },
   {
-    path: '/WorkoutExerciseView',
+    path: '/WorkoutExerciseView/:workout',
     name: 'WorkoutExerciseView',
     component: WorkoutExerciseView
   },

@@ -1,29 +1,28 @@
 <template>
     <section>
         <div id="workout-container">
-            {{ title }} - {{ created_on }} - {{ completed }}
-            <WorkoutExerciseView v-for="line in exerciseList" 
-            :key="line"
-            :reps="line.reps"
-            :sets="line.sets"/>
+            <p><router-link class="routerLink" :to="{ name: 'WorkoutExerciseView', params: { workout: workoutId }}">{{ workoutId }} Name: {{ title }} - Created: {{ created_on }} - Completion: {{ completed }}</router-link></p>
+            <b-dropdown id="dropdown-right" right text=""  class="m-md-2">
+                <b-dropdown-item @click="deleteWorkout">Delete</b-dropdown-item>
+            </b-dropdown>
         </div>
     </section>
 </template>
 
 <script>
-import WorkoutExerciseView from '../views/WorkoutExerciseView.vue'
+import axios from 'axios'
+import cookies from 'vue-cookies'
     export default {
         name: 'Workout',
-        components: {
-            WorkoutExerciseView
-        },
         data: () => {
             return {
                 exerciseList : [],
-                exerciseLine : {}
+                exerciseLine : {},
+                userToken : null,
             }
         },
         props: {
+            workoutId : Number,
             title : String,
             created_on : String,
             completed : Number,
@@ -31,8 +30,23 @@ import WorkoutExerciseView from '../views/WorkoutExerciseView.vue'
             userId : Number
         },
         methods: {
-            incrementCounter() {
-                this.$store.commit('incrementCounter');
+            deleteWorkout() {
+                axios.request({
+                    url: `${process.env.VUE_APP_BASE_DOMAIN}/api/workouts`,
+                    method: 'DELETE',
+                    headers:{
+                        'Content-Type': 'application/json'
+                    },
+                    data: {
+                        "loginToken" : this.userToken,
+                        "workoutId" : this.workoutId,
+                    }
+                }).then(() => {
+                    this.$emit('notifyParentDeleteWorkout', "");
+
+                }).catch((error) => {
+                    console.error("There was an error: " +error);
+                })
             },
             addExercise() {
                 this.exerciseLine = {
@@ -41,14 +55,32 @@ import WorkoutExerciseView from '../views/WorkoutExerciseView.vue'
 
                 }
                 this.exerciseList.unshift(this.exerciseLine);
-            }
-        }
+            },
+            getMyCookies() {
+                var getCookie = cookies.get('loginData');
+                this.userToken = getCookie.loginToken;
+                
+            },
+        },
+        mounted() {
+            this.getMyCookies();
+        },
     }
 </script>
 
 <style lang="scss" scoped>
     #workout-container {
         display: grid;
-        grid-template-columns: 1.2fr .8fr .8fr;
+        grid-template-columns: 1fr .05fr;
     }
+    p {
+        color: white;
+    }
+    .routerLink {
+    text-decoration: none;
+    color: rgb(255, 255, 255);
+    font-weight: bold;
+    font-size: 1.2rem;
+
+}
 </style>

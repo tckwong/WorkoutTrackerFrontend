@@ -1,13 +1,18 @@
 <template>
     <div>
-        <b-button variant="danger">+</b-button>
+        <b-button @click="addBtnTgl = !addBtnTgl" variant="danger">+</b-button>
+        <input v-if="addBtnTgl" type="text" v-model="newWorkoutTitle">
+        <b-button @click="createWorkout" v-if="addBtnTgl" variant="outline-primary">Add</b-button>
         <Workout v-for="workout in allWorkoutData" 
         :key="workout.workoutId"
+        :workoutId="workout.workoutId"
         :title="workout.title"
         :created_on="workout.created_on"
         :completed="workout.completed"
         :completed_on="workout.completed_on"
-        :userId="workout.userId"/>
+        :userId="workout.userId"
+        @notifyParentDeleteWorkout="retrieveWorkouts"
+        />
     </div>
 </template>
 
@@ -24,11 +29,21 @@ import Workout from './Workout.vue'
         data: () => {
             return {
                 allWorkoutData: [],
+                newWorkoutObj: {
+                    workoutId : null,
+                    title : null,
+                    created_on : null,
+                    completed : null,
+                    completed_on : null,
+                    userId : null,
+                },
                 workoutTitle: null,
                 workoutList: null,
                 userEmail: null,
                 userToken: null,
                 userId: null,
+                addBtnTgl : false,
+                newWorkoutTitle: null,
                 
             }
         },
@@ -70,13 +85,28 @@ import Workout from './Workout.vue'
                     },
                     data: {
                         "loginToken" : this.userToken,
-                        "title" : this.workoutTitle,
+                        "title" : this.newWorkoutTitle,
                     }
                 }).then((response) => {
-                    console.log(response)
+                    this.newWorkoutObj = {
+                        workoutId : response.data.workoutId,
+                        title : response.data.title,
+                        created_on : response.data.created_on,
+                        completed : response.data.completed,
+                        completed_on : response.data.completed_on,
+                        userId : response.data.userId,
+                        }
+                    this.allWorkoutData.push(this.newWorkoutObj);
+                    this.clearData();
+
                 }).catch((error) => {
                     console.error("There was an error: " +error);
                 })
+            },
+            clearData() {
+                this.newWorkoutObj = "";
+                this.newWorkoutTitle = "";
+                this.addBtnTgl = false;
             },
             getMyCookies() {
                 const getCookie = cookies.get('loginData');
@@ -84,10 +114,9 @@ import Workout from './Workout.vue'
                 this.userEmail = getCookie.email;
             },
         },
-        
         mounted() {
-            this.getMyCookies();
             this.retrieveUsers();
+            this.getMyCookies();
             
         },
         
