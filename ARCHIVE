@@ -1,0 +1,8 @@
+<router-link class="routerLink" :to="{ name: 'CurrentWorkout', params: { workout: workoutId }}"><b-button variant="outline-success">START WORKOUT</b-button></router-link>
+
+                        // "loginToken" : this.userToken,
+                        // "exerciseName" : this.getExerciseData.storeExerciseName,
+                        // "reps" : this.getExerciseData.storeRep,
+                        // "sets" : this.getExerciseData.storeSet,
+                        // "weight" : this.getExerciseData.storeWeight,
+                        // "workoutId" : this.workoutId

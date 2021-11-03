@@ -7,15 +7,22 @@
             style="max-width: 100vw;"
         >
         <b-col sm="3">
-            <b-card-title><b-form-input type="text" v-model="storeInfo.exerciseName"></b-form-input></b-card-title>
+            <b-card-title>{{ storeInfo.exerciseName }}</b-card-title>
         </b-col>
         <div class="grid-container">
             <p>Reps:</p>
             <p>Sets:</p>
             <p>Weight:</p>
-            <b-button @click="deleteExercise">X</b-button>
+            <label class="container">
+            <input type="checkbox" checked="checked">
+            <span class="checkmark"></span>
+            </label>
+            <!-- <b-button @click="deleteExercise">X</b-button> -->
             <b-col class="inputBoxWidth" sm="2">
-                <b-form-input v-model="storeInfo.reps" placeholder="0"></b-form-input>
+                <b-form inline>
+                <b-form-input id="inline-form-input-name" v-model="storeInfo.reps" placeholder="0"></b-form-input>
+                <b-button pill variant="primary">+1</b-button>
+                </b-form>
             </b-col>
             <b-col class="inputBoxWidth" sm="2">
                 <b-form-input v-model="storeInfo.sets" placeholder="0"></b-form-input>
@@ -33,7 +40,7 @@ import axios from 'axios'
 import cookies from 'vue-cookies'
 
     export default {
-        name: 'WorkoutTemplateChild',
+        name: 'CurrentWorkoutChild',
         props: {
             exerciseIdP : Number,
             exerciseNameP : String,
@@ -71,7 +78,7 @@ import cookies from 'vue-cookies'
                     },
                     data: {
                         "loginToken" : this.userToken,
-                        "exerciseId" : this.exerciseIdP,
+                        "exerciseId" : this.exerciseId,
                     }
                 }).then(() => {
                     this.$emit('notifyParentDeleteExercise');
@@ -116,12 +123,21 @@ import cookies from 'vue-cookies'
         display: grid;
         grid-template-columns: repeat(4, 1fr);
         grid-template-rows: repeat(2, 1fr);
+        p {
+            display: inline-block;
+        }
+        
+    }
+    #inputBox {
+        display: inline-block;
+        button{
+            display: inline-block;
+            padding-left: 5px;
+            margin-left: 5px;
+        }
     }
     .inputBoxWidth {
         width: 50px;
-    }
-    #checkbox-1 {
-        width: 30px;
     }
     
 </style>

@@ -5,15 +5,25 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    counter: 1
+    items: [],
+    currWorkoutData: []
   },
+
   mutations: {
-    incrementCounter(state){
-      state.counter+=1
+    updateExerciseData: (state, data) => {
+      state.items.push(data)
+    },
+    updateCurrWorkoutData: (state, items) => {
+      state.currWorkoutData.push(items)
     }
   },
+
   actions: {
-  },
-  modules: {
-  }
+    loadItems: (context, data) => {
+      context.commit('updateExerciseData', data);
+    }
+  },loadCurItems: (context, items) => {
+      context.commit('updateCurrWorkoutData', items);
+    }
+  
 })

@@ -1,40 +1,53 @@
 <template>
     <div>
-        <CurrentWorkoutExercises v-for="exercise in allExerciseData" 
+        <CurrentWorkoutChild ref="search" v-for="exercise in allExerciseData" 
         :key="exercise.exerciseId"
-        :exerciseId="exercise.exerciseId"
-        :exerciseName="exercise.exerciseName"
-        :reps="exercise.reps"
-        :sets="exercise.sets"
-        :weight="exercise.weight"
-        :workoutTitle="exercise.workoutTitle"
+        :exerciseIdP="exercise.exerciseId"
+        :exerciseNameP="exercise.exerciseName"
+        :repsP="exercise.reps"
+        :setsP="exercise.sets"
+        :weightP="exercise.weight"
+        :workoutTitleP="exercise.workoutTitle"
+        :state="state"
         @notifyParentDeleteExercise="retrieveExercises"
         />
-        <button @click="addExercise" class="addExerciseBtn">Add Exercise</button>
+        <button @click="addExercise" class="addExerciseBtn">ADD EXERCISE</button>
+        <button @click="changeState" class="addExerciseBtn">FINISH WORKOUT</button>
+        {{getExerciseData}}
     </div>
 </template>
 
 <script>
 import axios from 'axios'
 import cookies from 'vue-cookies'
-import CurrentWorkoutExercises from '@/components/CurrentWorkoutExercises.vue'
+import CurrentWorkoutChild from '@/components/CurrentWorkoutChild.vue'
+import '../css/currentWorkoutStyle.scss'
 
     export default {
-        name: 'CurrentWorkout',
+        name: 'WorkoutTemplate',
         components: {
-            CurrentWorkoutExercises
+            CurrentWorkoutChild
         },
         data: () => {
             return {
                 allExerciseData : [],
                 exerciseRow : {},
                 workoutId : null,
+                state : false,
+                userToken : null,
+                storeData: [],
+                storeJSON : [],
+            }
+        },
+        computed: {
+            getExerciseData: function() {
+                return this.$store.state.items
             }
         },
         methods: {
             retrieveExercises() {
                 axios.request({
-                    url: `${process.env.VUE_APP_BASE_DOMAIN}/api/exercises`,
+                    url: `${process.env.VUE_APP_BASE_DOMAIN}/api/current-workout`,
                     method: 'GET',
                     params : {
                         "workoutId" : this.$route.params.workout
@@ -46,15 +59,39 @@ import CurrentWorkoutExercises from '@/components/CurrentWorkoutExercises.vue'
                     console.error("There was an error: " +error);
                 })
             },
-
             addExercise() {
                 this.exerciseRow = {
-                    exerciseName: null,
+                    exerciseName: 'New Exercise',
                     reps : null,
                     sets : null,
                     weight : null,
                 }
                 this.allExerciseData.push(this.exerciseRow);
+            },
+            changeState() {
+                this.state = !this.state;
+                setTimeout(this.finishWorkout, 300);
+            },
+            finishWorkout() {
+                axios.request({
+                    url: `${process.env.VUE_APP_BASE_DOMAIN}/api/exercises`,
+                    method: 'POST',
+                    headers : {
+                        'Content-Type': 'application/json'
+                    },
+                    data : JSON.stringify(this.$store.state.items)
+                    
+                }).then((response) => {
+                    console.log(response)
+                    // this.$router.push({ name: 'CurrentWorkout' });
+                }).catch((error) => {
+                    // var childData = []
+                    // childData.push(this.getExerciseData)
+                    // console.log(childData)
+                    // childData = this.$refs.search.storeInfo
+                    // console.log(childData)
+                    console.error("There was an error: " +error);
+                })
             },
             getMyCookies() {
                 const getCookie = cookies.get('loginData');
@@ -83,6 +120,7 @@ import CurrentWorkoutExercises from '@/components/CurrentWorkoutExercises.vue'
 	font-size:15px;
 	font-weight:bold;
 	padding:6px 24px;
+    margin-left: 10px;
 	text-decoration:none;
 	text-shadow:0px 1px 0px #b23e35;
     }

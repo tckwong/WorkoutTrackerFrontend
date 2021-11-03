@@ -1,14 +1,19 @@
 <template>
     <div>
-        <WorkoutTemplateChild v-for="exercise in exerciseList" 
+        <WorkoutTemplateChild ref="search" v-for="exercise in allExerciseData" 
         :key="exercise.exerciseId"
-        :exerciseId="exercise.exerciseId"
-        :exerciseName="exercise.exerciseName"
-        :reps="exercise.reps"
-        :sets="exercise.sets"
-        :weight="exercise.weight"
+        :exerciseIdP="exercise.exerciseId"
+        :exerciseNameP="exercise.exerciseName"
+        :repsP="exercise.reps"
+        :setsP="exercise.sets"
+        :weightP="exercise.weight"
+        :workoutTitleP="exercise.workoutTitle"
+        :state="state"
+        @notifyParentDeleteExercise="retrieveExercises"
         />
-        <router-link class="routerLink" :to="{ name: 'CurrentWorkout', params: { workout: workoutId }}"><b-button variant="outline-success">START WORKOUT</b-button></router-link>
+        <button @click="addExercise" class="addExerciseBtn">ADD EXERCISE</button>
+        <button @click="changeState" class="addExerciseBtn">START WORKOUT</button>
+        {{getExerciseData}}
     </div>
 </template>
 
@@ -24,9 +29,18 @@ import WorkoutTemplateChild from '@/components/WorkoutTemplateChild.vue'
         },
         data: () => {
             return {
+                allExerciseData : [],
+                exerciseRow : {},
                 workoutId : null,
-                exerciseList : [],
-                exerciseObj : {},
+                state : false,
+                userToken : null,
+                storeData: [],
+                storeJSON : [],
+            }
+        },
+        computed: {
+            getExerciseData: function() {
+                return this.$store.state.items
             }
         },
         methods: {
@@ -38,15 +52,41 @@ import WorkoutTemplateChild from '@/components/WorkoutTemplateChild.vue'
                         "workoutId" : this.$route.params.workout
                     }
                 }).then((response) => {
-                    this.workoutId = this.$route.params.workout
-                    for (let i=0; i<response.data.length; i++){
-                        this.exerciseObj = {
-                            exerciseName : response.data[i].exerciseName,
-                            sets : response.data[i].sets,
-                        }
-                        this.exerciseList.push(this.exerciseObj)
-                    }
+                    this.allExerciseData = response.data;
                 }).catch((error) => {
+                    console.error("There was an error: " +error);
+                })
+            },
+            addExercise() {
+                this.exerciseRow = {
+                    exerciseName: 'New Exercise',
+                    reps : null,
+                    sets : null,
+                    weight : null,
+                }
+                this.allExerciseData.push(this.exerciseRow);
+            },
+            changeState() {
+                this.state = !this.state;
+                setTimeout(this.loadCurrWorkout, 300);
+            },
+            loadCurrWorkout() {
+                axios.request({
+                    url: `${process.env.VUE_APP_BASE_DOMAIN}/api/exercises`,
+                    method: 'POST',
+                    headers : {
+                        'Content-Type': 'application/json'
+                    },
+                    data : JSON.stringify(this.$store.state.items)
+                    
+                }).then(() => {
+                    this.$router.push({ name: 'CurrentWorkout' });
+                }).catch((error) => {
+                    // var childData = []
+                    // childData.push(this.getExerciseData)
+                    // console.log(childData)
+                    // childData = this.$refs.search.storeInfo
+                    // console.log(childData)
                     console.error("There was an error: " +error);
                 })
             },
@@ -62,6 +102,7 @@ import WorkoutTemplateChild from '@/components/WorkoutTemplateChild.vue'
     }
 </script>
 
+
 <style lang="scss" scoped>
     .addExerciseBtn {
 	box-shadow:inset 0px 1px 0px 0px #f7c5c0;
@@ -72,8 +113,11 @@ import WorkoutTemplateChild from '@/components/WorkoutTemplateChild.vue'
 	display:inline-block;
 	cursor:pointer;
 	color:#ffffff;
+	font-family:Arial;
+	font-size:15px;
 	font-weight:bold;
 	padding:6px 24px;
+    margin-left: 10px;
 	text-decoration:none;
 	text-shadow:0px 1px 0px #b23e35;
     }
