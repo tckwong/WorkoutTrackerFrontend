@@ -2,7 +2,7 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import { BootstrapVue, IconsPlugin, BootstrapVueIcons } from 'bootstrap-vue'
+import { BootstrapVue, IconsPlugin, BootstrapVueIcons,VBTogglePlugin } from 'bootstrap-vue'
 import Vuelidate from 'vuelidate'
 import VueScrollReveal from 'vue-scroll-reveal'
 
@@ -15,6 +15,7 @@ Vue.config.productionTip = false
 Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
 Vue.use(BootstrapVueIcons)
+Vue.use(VBTogglePlugin)
 Vue.use(Vuelidate)
 
 Vue.use(VueScrollReveal, {

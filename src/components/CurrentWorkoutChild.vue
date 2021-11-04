@@ -68,14 +68,14 @@ import cookies from 'vue-cookies'
                 userToken : null,
 
                 storeInfo : {
-                    workoutId: "",
-                    exerciseId: "",
-                    userId: "",
-                    loginToken: "",
-                    exerciseName: "",
-                    reps: "",
-                    sets: "",
-                    weight: "",
+                    workoutId: null,
+                    exerciseId: null,
+                    userId: null,
+                    loginToken: null,
+                    exerciseName: null,
+                    reps: null,
+                    sets: null,
+                    weight: null,
                 }
             }
         },

@@ -1,19 +1,46 @@
 <template>
     <div>
-        <b-button @click="addBtnTgl = !addBtnTgl" variant="danger">ADD WORKOUT</b-button>
-        <input v-if="addBtnTgl" type="text" v-model="newWorkoutTitle">
-        <b-button @click="createWorkout" v-if="addBtnTgl" variant="outline-primary">Add</b-button>
-        <WorkoutSplitChild v-for="workout in allWorkoutData" 
-        :key="workout.workoutId"
-        :workoutId="workout.workoutId"
-        :title="workout.title"
-        :created_on="workout.created_on"
-        :completed="workout.completed"
-        :completed_on="workout.completed_on"
-        :userId="workout.userId"
-        @notifyParentDeleteWorkout="retrieveWorkouts"
-        />
+        <div class="template-container">
+            <h2>Your Workout Templates</h2>
+
+            <WorkoutSplitChild v-for="workout in allWorkoutData" 
+            :key="workout.workoutId"
+            :workoutId="workout.workoutId"
+            :title="workout.title"
+            :created_on="workout.created_on"
+            :completed="workout.completed"
+            :completed_on="workout.completed_on"
+            :userId="workout.userId"
+            @notifyParentDeleteWorkout="retrieveWorkouts"
+            />
+        </div>
         <h2>Current Workout</h2>
+            <b-button v-b-toggle href="#example-sidebar" @click.prevent>Toggle Sidebar</b-button>
+            <div>
+            <b-button v-b-toggle:my-collapse>
+                <span class="when-open">Close</span><span class="when-closed">Open</span>
+            </b-button>
+            <b-collapse id="my-collapse">
+            <h1>HELLO</h1>
+            </b-collapse>
+            <b-sidebar id="example-sidebar" title="Sidebar" shadow>
+            <div class="px-3 py-2">
+                Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis
+                in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
+            </div>
+            </b-sidebar>
+            </div>
+            <!-- Adding a bottom nav -->
+            <div class="botton-nav-container">
+                <ul>
+                    <li><img v-b-modal.modal-center @click="showModal" src="@/assets/plusIcon.png">
+                        <b-modal ref="my-modal" id="modal-center" centered title="Name Your Workout" @ok="createWorkout">
+                        <input v-model="newWorkoutTitle" type="text">
+                    </b-modal>
+                    </li>
+                    <li><img @click="$router.push({name: 'WorkoutHistory'})" src="@/assets/historyIcon.png"></li>
+                </ul>
+            </div>
     </div>
 </template>
 
@@ -43,12 +70,15 @@ import WorkoutSplitChild from './WorkoutSplitChild.vue'
                 userEmail: null,
                 userToken: null,
                 userId: null,
-                addBtnTgl : false,
                 newWorkoutTitle: null,
+                modalShow: false
                 
             }
         },
         methods: {
+            showModal() {
+                this.$refs['my-modal'].show()
+            },
             // Find the userId of logged in user. Then we retrieve all workouts for that user
             retrieveUsers() {
                 axios.request({
@@ -71,7 +101,6 @@ import WorkoutSplitChild from './WorkoutSplitChild.vue'
                         userId: this.userId,
                     }
                 }).then((response) => {
-                    console.log(response)
                     this.allWorkoutData = response.data;
                 }).catch((error) => {
                     console.error("There was an error: " +error);
@@ -98,16 +127,13 @@ import WorkoutSplitChild from './WorkoutSplitChild.vue'
                         userId : response.data.userId,
                         }
                     this.allWorkoutData.push(this.newWorkoutObj);
-                    this.clearData();
 
                 }).catch((error) => {
                     console.error("There was an error: " +error);
                 })
             },
-            clearData() {
-                this.newWorkoutObj = "";
-                this.newWorkoutTitle = "";
-                this.addBtnTgl = false;
+            goToHistory() {
+                this.$router.push({name: 'WorkoutHistory'});
             },
             getMyCookies() {
                 const getCookie = cookies.get('loginData');
@@ -125,5 +151,43 @@ import WorkoutSplitChild from './WorkoutSplitChild.vue'
 </script>
 
 <style lang="scss" scoped>
+    h2 {
+        color: #e06a1c;
+        font-weight: 800;
+        text-align: center;
+        margin: 10px 0;
+    }
+    .template-container {
+        border: 1px solid blue;
+    }
+    .collapsed > .when-open, .not-collapsed > .when-closed {
+        display: none;
+    }
+    .bottom-nav-container {
+        position:fixed;
+        bottom: 0;
+        left: 0;
+        background-color: black;
+    }
+    ul {
+        background-color: black;
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        }
+
+        li {
+            display: inline;
+            list-style-type: none;
+            padding: 25px;
+            border-bottom:none;
+            border-right: 1px solid grey;
+            img {
+            width:10vw;
+            cursor:pointer;
+        }
+        }
+        
+
 
 </style>

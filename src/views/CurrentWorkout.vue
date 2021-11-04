@@ -13,8 +13,8 @@
         @notifyParentDeleteExercise="retrieveExercises"
         />
         <button v-scroll-reveal.reset="{ delay: 250 }" @click="addExercise" class="addExerciseBtn">ADD EXERCISE</button>
-        <button @click="changeState" class="addExerciseBtn finishBtn">FINISH WORKOUT</button>
-        <button @click="endWorkout" class="addExerciseBtn endWorkoutBtn">END WORKOUT</button>
+        <button v-scroll-reveal.reset="{ delay: 250 }" @click="changeState" class="addExerciseBtn finishBtn">FINISH WORKOUT</button>
+        <button v-scroll-reveal.reset="{ delay: 250 }" @click="endWorkout" class="addExerciseBtn endWorkoutBtn">END WORKOUT</button>
         <!-- {{getExerciseData}} -->
     </div>
 </template>
@@ -78,7 +78,7 @@ import '../css/currentWorkoutStyle.scss'
             },
             changeState() {
                 this.stateCurrent = !this.stateCurrent;
-                setTimeout(this.finishWorkout, 300);
+                setTimeout(this.finishWorkout, 100);
             },
             endWorkout() {
                 axios.request({
@@ -93,7 +93,7 @@ import '../css/currentWorkoutStyle.scss'
                     }
                 }).then((response) => {
                     console.log(response)
-                    // this.$router.push({ name: 'CurrentWorkout' });
+                    this.$router.push({ name: 'WorkoutSplit' });
                 }).catch((error) => {
                     console.error("There was an error: " +error);
                 })
@@ -107,9 +107,26 @@ import '../css/currentWorkoutStyle.scss'
                     },
                     data : JSON.stringify(this.$store.state.currWorkoutData)
                     
-                }).then((response) => {
-                    console.log(response)
-                    // this.$router.push({ name: 'CurrentWorkout' });
+                }).then(() => {
+                    this.endWorkoutSession();
+                }).catch((error) => {
+                    console.error("There was an error: " +error);
+                })
+            },
+            endWorkoutSession() {
+                axios.request({
+                    url: `${process.env.VUE_APP_BASE_DOMAIN}/api/workout-session`,
+                    method: 'DELETE',
+                    headers : {
+                        'Content-Type': 'application/json'
+                    },
+                    data : {
+                        "loginToken" : this.userToken,
+                        'userId' : this.userId
+                    }
+                    
+                }).then(() => {
+                    this.$router.push({ name: 'WorkoutHistory' });
                 }).catch((error) => {
                     console.error("There was an error: " +error);
                 })
@@ -131,7 +148,7 @@ import '../css/currentWorkoutStyle.scss'
 <style lang="scss" scoped>
     .addExerciseBtn {
     position: fixed;
-    top: 0;
+    top: 5px;
     right: 0;
 	box-shadow:inset 0px 1px 0px 0px #f7c5c0;
 	background:linear-gradient(to bottom, #fc8d83 5%, #e4685d 100%);
@@ -153,16 +170,13 @@ import '../css/currentWorkoutStyle.scss'
         background:linear-gradient(to bottom, #e4685d 5%, #fc8d83 100%);
         background-color:#e4685d;
     }
-    .addExerciseBtn:active {
-        position:relative;
-        top:1px;
-    }
+
     .finishBtn {
-        top: 50px;
+        top: 45px;
         right: 0;
     }
     .endWorkoutBtn {
-        top: 90px;
+        top: 85px;
         right: 0;
     }
 </style>

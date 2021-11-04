@@ -7,6 +7,7 @@ import UserLogin from '../views/LoginViews/UserLogin.vue'
 import UserRegistration from '../views/LoginViews/UserRegistration.vue'
 import CurrentWorkout from '../views/CurrentWorkout.vue'
 import WorkoutTemplate from '../views/WorkoutTemplate.vue'
+import WorkoutHistory from '../views/WorkoutHistory.vue'
 
 Vue.use(VueRouter)
 
@@ -45,6 +46,11 @@ const routes = [
     path: '/WorkoutTemplate/:workout',
     name: 'WorkoutTemplate',
     component: WorkoutTemplate
+  },
+  {
+    path: '/WorkoutHistory',
+    name: 'WorkoutHistory',
+    component: WorkoutHistory
   },
 ]
 

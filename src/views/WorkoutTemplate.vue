@@ -1,5 +1,6 @@
 <template>
     <div>
+        <h1>{{ workoutTitle }}</h1>
         <WorkoutTemplateChild ref="search" v-for="exercise in allExerciseData" 
         :key="exercise.exerciseId"
         :exerciseIdP="exercise.exerciseId"
@@ -12,9 +13,9 @@
         :state="state"
         @notifyParentDeleteExercise="retrieveExercises"
         />
-        <button @click="addExercise" class="addExerciseBtn">ADD EXERCISE</button>
-        <button @click="start_workout_session" class="addExerciseBtn">START WORKOUT</button>
-        {{getExerciseData}}
+        
+        <button v-b-modal.modal-center @click="addExercise" class="addExerciseBtn">ADD EXERCISE</button>
+        <button @click="startWorkoutSession" class="addExerciseBtn">START WORKOUT</button>
     </div>
 </template>
 
@@ -30,6 +31,7 @@ import WorkoutTemplateChild from '@/components/WorkoutTemplateChild.vue'
         },
         data: () => {
             return {
+                workoutTitle: null,
                 allExerciseData : [],
                 exerciseRow : {},
                 workoutId : null,
@@ -46,6 +48,21 @@ import WorkoutTemplateChild from '@/components/WorkoutTemplateChild.vue'
             }
         },
         methods: {
+            retrieveWorkoutTitle() {
+                axios.request({
+                    url: `${process.env.VUE_APP_BASE_DOMAIN}/api/workouts`,
+                    method: 'GET',
+                    params : {
+                        "userId" : this.userId
+                    }
+                }).then((response) => {
+                    const idConversion = Number(this.$route.params.workout)
+                    const found = response.data.find(workout => workout.workoutId === idConversion);
+                    this.workoutTitle = found.title;
+                }).catch((error) => {
+                    console.error("There was an error: " +error);
+                })
+            },
             retrieveExercises() {
                 axios.request({
                     url: `${process.env.VUE_APP_BASE_DOMAIN}/api/exercises`,
@@ -54,6 +71,7 @@ import WorkoutTemplateChild from '@/components/WorkoutTemplateChild.vue'
                         "workoutId" : this.$route.params.workout
                     }
                 }).then((response) => {
+                    console.log(response)
                     this.allExerciseData = response.data;
                 }).catch((error) => {
                     console.error("There was an error: " +error);
@@ -68,21 +86,20 @@ import WorkoutTemplateChild from '@/components/WorkoutTemplateChild.vue'
                 }
                 this.allExerciseData.push(this.exerciseRow);
             },
-        
-            start_workout_session() {
-            axios.request({
-                    url: `${process.env.VUE_APP_BASE_DOMAIN}/api/workout-session`,
-                    method: 'POST',
-                    headers : {
-                        'Content-Type': 'application/json'
-                    },
-                    data : {
-                        "loginToken": this.userToken,
-                        "userId": this.userId,
-                    }
+            startWorkoutSession() {
+                axios.request({
+                        url: `${process.env.VUE_APP_BASE_DOMAIN}/api/workout-session`,
+                        method: 'POST',
+                        headers : {
+                            'Content-Type': 'application/json'
+                        },
+                        data : {
+                            "loginToken": this.userToken,
+                            "userId": this.userId,
+                        }
                 }).then(() => {
                     this.state = !this.state;
-                    setTimeout(this.loadCurrWorkout, 200);
+                    setTimeout(this.loadCurrWorkout, 100);
 
                 }).catch((error) => {
                     console.error("There was an error: " +error);
@@ -113,6 +130,7 @@ import WorkoutTemplateChild from '@/components/WorkoutTemplateChild.vue'
         async mounted() {
             await this.retrieveExercises();
             this.getMyCookies();
+            this.retrieveWorkoutTitle();
         },
     }
 </script>

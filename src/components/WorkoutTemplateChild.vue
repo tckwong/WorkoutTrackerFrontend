@@ -52,12 +52,12 @@ import cookies from 'vue-cookies'
                 userToken : null,
 
                 storeInfo : {
-                    workoutId: "",
-                    loginToken: "",
-                    exerciseName: "",
-                    reps: "",
-                    sets: "",
-                    weight: ""
+                    workoutId: null,
+                    loginToken: null,
+                    exerciseName: null,
+                    reps: null,
+                    sets: null,
+                    weight: null,
                 }
             }
         },

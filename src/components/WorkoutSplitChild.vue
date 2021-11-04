@@ -1,10 +1,13 @@
 <template>
     <section>
         <div id="workout-container">
-            <p><router-link class="routerLink" :to="{ name: 'WorkoutTemplate', params: { workout: workoutId }}">WORKOUT NAME: {{ title }} - Created: {{ created_on }} - Completion: {{ completed }}</router-link></p>
-            <b-dropdown id="dropdown-right" right text=""  class="m-md-2">
-                <b-dropdown-item @click="deleteWorkout">Delete</b-dropdown-item>
-            </b-dropdown>
+            <router-link class="routerLink" :to="{ name: 'WorkoutTemplate', params: { workout: workoutId }}">
+                <h2 class="workout_deets">{{ title }}</h2>
+                <p>Created on: {{ created_on }}</p>
+            </router-link>
+            <div>
+                <img @click="deleteWorkout" id="removeIcon" src="@/assets/removeIcon.png">
+            </div>
         </div>
     </section>
 </template>
@@ -27,8 +30,6 @@ import cookies from 'vue-cookies'
             workoutId : Number,
             title : String,
             created_on : String,
-            completed : Number,
-            completed_on : String,
             userId : Number
         },
         methods: {
@@ -65,15 +66,30 @@ import cookies from 'vue-cookies'
     #workout-container {
         display: grid;
         grid-template-columns: 1fr .05fr;
+        border-bottom: 2px solid white;
     }
     p {
         color: white;
     }
     .routerLink {
-    text-decoration: none;
-    color: rgb(255, 255, 255);
-    font-weight: bold;
-    font-size: 1.2rem;
+        text-decoration: none;
+        color: rgb(255, 255, 255);
+        font-weight: bold;
+        font-size: 1.2rem;
 
-}
+        .workout_deets {
+            padding-left: 2vw;
+            font-weight: 600;
+            color: #e06a1c;
+        }
+    }
+    .routerLink > p:nth-child(2) {
+            font-size: 1rem;
+            padding-left: 4vw;
+            font-weight: 100;
+    }
+    #removeIcon {
+        cursor: pointer;
+        width: 60px;
+    }
 </style>
