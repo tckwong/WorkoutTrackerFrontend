@@ -8,12 +8,14 @@
         :setsP="exercise.sets"
         :weightP="exercise.weight"
         :workoutTitleP="exercise.workoutTitle"
-        :state="state"
+        :userIdP="exercise.userId"
+        :stateCurrent="stateCurrent"
         @notifyParentDeleteExercise="retrieveExercises"
         />
-        <button @click="addExercise" class="addExerciseBtn">ADD EXERCISE</button>
-        <button @click="changeState" class="addExerciseBtn">FINISH WORKOUT</button>
-        {{getExerciseData}}
+        <button v-scroll-reveal.reset="{ delay: 250 }" @click="addExercise" class="addExerciseBtn">ADD EXERCISE</button>
+        <button @click="changeState" class="addExerciseBtn finishBtn">FINISH WORKOUT</button>
+        <button @click="endWorkout" class="addExerciseBtn endWorkoutBtn">END WORKOUT</button>
+        <!-- {{getExerciseData}} -->
     </div>
 </template>
 
@@ -33,15 +35,16 @@ import '../css/currentWorkoutStyle.scss'
                 allExerciseData : [],
                 exerciseRow : {},
                 workoutId : null,
-                state : false,
+                stateCurrent : false,
                 userToken : null,
                 storeData: [],
                 storeJSON : [],
+                userId : null,
             }
         },
         computed: {
             getExerciseData: function() {
-                return this.$store.state.items
+                return this.$store.state.currWorkoutData
             }
         },
         methods: {
@@ -54,6 +57,9 @@ import '../css/currentWorkoutStyle.scss'
                     }
                 }).then((response) => {
                     console.log(response)
+                    for (let i=0; i<response.data.length; i++){
+                        response.data[i].userId = this.userId;
+                    }
                     this.allExerciseData = response.data;
                 }).catch((error) => {
                     console.error("There was an error: " +error);
@@ -65,37 +71,53 @@ import '../css/currentWorkoutStyle.scss'
                     reps : null,
                     sets : null,
                     weight : null,
+                    userId : this.userId,
+
                 }
                 this.allExerciseData.push(this.exerciseRow);
             },
             changeState() {
-                this.state = !this.state;
+                this.stateCurrent = !this.stateCurrent;
                 setTimeout(this.finishWorkout, 300);
+            },
+            endWorkout() {
+                axios.request({
+                    url: `${process.env.VUE_APP_BASE_DOMAIN}/api/workout-session`,
+                    method: 'DELETE',
+                    headers : {
+                        'Content-Type': 'application/json'
+                    },
+                    data : {
+                        "loginToken" : this.userToken,
+                        "userId" : this.userId
+                    }
+                }).then((response) => {
+                    console.log(response)
+                    // this.$router.push({ name: 'CurrentWorkout' });
+                }).catch((error) => {
+                    console.error("There was an error: " +error);
+                })
             },
             finishWorkout() {
                 axios.request({
-                    url: `${process.env.VUE_APP_BASE_DOMAIN}/api/exercises`,
+                    url: `${process.env.VUE_APP_BASE_DOMAIN}/api/current-workout`,
                     method: 'POST',
                     headers : {
                         'Content-Type': 'application/json'
                     },
-                    data : JSON.stringify(this.$store.state.items)
+                    data : JSON.stringify(this.$store.state.currWorkoutData)
                     
                 }).then((response) => {
                     console.log(response)
                     // this.$router.push({ name: 'CurrentWorkout' });
                 }).catch((error) => {
-                    // var childData = []
-                    // childData.push(this.getExerciseData)
-                    // console.log(childData)
-                    // childData = this.$refs.search.storeInfo
-                    // console.log(childData)
                     console.error("There was an error: " +error);
                 })
             },
             getMyCookies() {
                 const getCookie = cookies.get('loginData');
                 this.userToken = getCookie.loginToken;
+                this.userId = getCookie.userId;
             },
         },
         async mounted() {
@@ -108,6 +130,9 @@ import '../css/currentWorkoutStyle.scss'
 
 <style lang="scss" scoped>
     .addExerciseBtn {
+    position: fixed;
+    top: 0;
+    right: 0;
 	box-shadow:inset 0px 1px 0px 0px #f7c5c0;
 	background:linear-gradient(to bottom, #fc8d83 5%, #e4685d 100%);
 	background-color:#fc8d83;
@@ -131,5 +156,13 @@ import '../css/currentWorkoutStyle.scss'
     .addExerciseBtn:active {
         position:relative;
         top:1px;
+    }
+    .finishBtn {
+        top: 50px;
+        right: 0;
+    }
+    .endWorkoutBtn {
+        top: 90px;
+        right: 0;
     }
 </style>

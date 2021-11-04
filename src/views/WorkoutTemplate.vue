@@ -8,11 +8,12 @@
         :setsP="exercise.sets"
         :weightP="exercise.weight"
         :workoutTitleP="exercise.workoutTitle"
+        :userIdP="exercise.userId"
         :state="state"
         @notifyParentDeleteExercise="retrieveExercises"
         />
         <button @click="addExercise" class="addExerciseBtn">ADD EXERCISE</button>
-        <button @click="changeState" class="addExerciseBtn">START WORKOUT</button>
+        <button @click="start_workout_session" class="addExerciseBtn">START WORKOUT</button>
         {{getExerciseData}}
     </div>
 </template>
@@ -34,6 +35,7 @@ import WorkoutTemplateChild from '@/components/WorkoutTemplateChild.vue'
                 workoutId : null,
                 state : false,
                 userToken : null,
+                userId : null,
                 storeData: [],
                 storeJSON : [],
             }
@@ -66,9 +68,25 @@ import WorkoutTemplateChild from '@/components/WorkoutTemplateChild.vue'
                 }
                 this.allExerciseData.push(this.exerciseRow);
             },
-            changeState() {
-                this.state = !this.state;
-                setTimeout(this.loadCurrWorkout, 300);
+        
+            start_workout_session() {
+            axios.request({
+                    url: `${process.env.VUE_APP_BASE_DOMAIN}/api/workout-session`,
+                    method: 'POST',
+                    headers : {
+                        'Content-Type': 'application/json'
+                    },
+                    data : {
+                        "loginToken": this.userToken,
+                        "userId": this.userId,
+                    }
+                }).then(() => {
+                    this.state = !this.state;
+                    setTimeout(this.loadCurrWorkout, 200);
+
+                }).catch((error) => {
+                    console.error("There was an error: " +error);
+                })
             },
             loadCurrWorkout() {
                 axios.request({
@@ -82,17 +100,14 @@ import WorkoutTemplateChild from '@/components/WorkoutTemplateChild.vue'
                 }).then(() => {
                     this.$router.push({ name: 'CurrentWorkout' });
                 }).catch((error) => {
-                    // var childData = []
-                    // childData.push(this.getExerciseData)
-                    // console.log(childData)
-                    // childData = this.$refs.search.storeInfo
-                    // console.log(childData)
+
                     console.error("There was an error: " +error);
                 })
             },
             getMyCookies() {
                 const getCookie = cookies.get('loginData');
                 this.userToken = getCookie.loginToken;
+                this.userId = getCookie.userId;
             },
         },
         async mounted() {

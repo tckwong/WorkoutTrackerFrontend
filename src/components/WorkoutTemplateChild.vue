@@ -40,6 +40,7 @@ import cookies from 'vue-cookies'
             repsP : Number,
             setsP : Number,
             weightP : Number,
+            userIdP : Number,
             state : Boolean,
 
         },

@@ -13,17 +13,18 @@ export default new Vuex.Store({
     updateExerciseData: (state, data) => {
       state.items.push(data)
     },
-    updateCurrWorkoutData: (state, items) => {
-      state.currWorkoutData.push(items)
+    updateCurrWorkoutData: (state, data) => {
+      state.currWorkoutData.push(data)
     }
   },
 
   actions: {
     loadItems: (context, data) => {
       context.commit('updateExerciseData', data);
+    },
+    loadCurrItems: (context, data) => {
+      context.commit('updateCurrWorkoutData', data);
     }
-  },loadCurItems: (context, items) => {
-      context.commit('updateCurrWorkoutData', items);
-    }
+  },
   
 })

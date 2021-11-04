@@ -1,7 +1,7 @@
 <template>
     <section>
         <div id="workout-container">
-            <p><router-link class="routerLink" :to="{ name: 'WorkoutTemplate', params: { workout: workoutId }}">{{ workoutId }} Name: {{ title }} - Created: {{ created_on }} - Completion: {{ completed }}</router-link></p>
+            <p><router-link class="routerLink" :to="{ name: 'WorkoutTemplate', params: { workout: workoutId }}">WORKOUT NAME: {{ title }} - Created: {{ created_on }} - Completion: {{ completed }}</router-link></p>
             <b-dropdown id="dropdown-right" right text=""  class="m-md-2">
                 <b-dropdown-item @click="deleteWorkout">Delete</b-dropdown-item>
             </b-dropdown>

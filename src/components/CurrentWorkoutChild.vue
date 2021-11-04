@@ -18,17 +18,25 @@
             <span class="checkmark"></span>
             </label>
             <!-- <b-button @click="deleteExercise">X</b-button> -->
+            
             <b-col class="inputBoxWidth" sm="2">
-                <b-form inline>
-                <b-form-input id="inline-form-input-name" v-model="storeInfo.reps" placeholder="0"></b-form-input>
-                <b-button pill variant="primary">+1</b-button>
-                </b-form>
+                <b-row>
+                    <b-form-input id="inline-form" v-model="storeInfo.reps" placeholder="0"></b-form-input>
+                    <button @click="incrementRepsBy1" class="incrementbtn1">+1</button>
+                </b-row>
+            </b-col>
+
+            <b-col class="inputBoxWidth" sm="2">
+                <b-row>
+                    <b-form-input v-model="storeInfo.sets" placeholder="0"></b-form-input>
+                    <button @click="incrementSetsBy1" class="incrementbtn1">+1</button>
+                </b-row>
             </b-col>
             <b-col class="inputBoxWidth" sm="2">
-                <b-form-input v-model="storeInfo.sets" placeholder="0"></b-form-input>
-            </b-col>
-            <b-col class="inputBoxWidth" sm="2">
-                <b-form-input v-model="storeInfo.weight" placeholder="0"></b-form-input>
+                <b-row>
+                    <b-form-input v-model="storeInfo.weight" placeholder="0"></b-form-input>
+                    <button @click="incrementWeightBy5" class="incrementbtn1">+5</button>
+                </b-row>
             </b-col>
         </div>
         </b-card>
@@ -42,12 +50,14 @@ import cookies from 'vue-cookies'
     export default {
         name: 'CurrentWorkoutChild',
         props: {
+            workoutTitleP : String,
             exerciseIdP : Number,
             exerciseNameP : String,
             repsP : Number,
             setsP : Number,
             weightP : Number,
-            state : Boolean,
+            userIdP : Number,
+            stateCurrent : Boolean,
 
         },
         data: () => {
@@ -59,15 +69,16 @@ import cookies from 'vue-cookies'
 
                 storeInfo : {
                     workoutId: "",
+                    exerciseId: "",
+                    userId: "",
                     loginToken: "",
                     exerciseName: "",
                     reps: "",
                     sets: "",
-                    weight: ""
+                    weight: "",
                 }
             }
         },
-
         methods: {
             deleteExercise() {
                 axios.request({
@@ -88,17 +99,29 @@ import cookies from 'vue-cookies'
                 })
             },
             addDataToStore() {
-                this.$store.dispatch('loadItems',this.storeInfo)
+                this.$store.dispatch('loadCurrItems',this.storeInfo);
             },
             initialData() {
                 this.storeInfo = {
                     workoutId : this.$route.params.workout,
+                    title : this.workoutTitleP,
+                    exerciseId : this.exerciseIdP,
                     loginToken : this.userToken,
                     exerciseName : this.exerciseNameP,
-                    reps: this.repsP,
-                    sets: this.setsP,
-                    weight: this.weightP
+                    reps : this.repsP,
+                    sets : this.setsP,
+                    userId : this.userIdP,
+                    weight : this.weightP
                 }
+            },
+            incrementRepsBy1() {
+                this.storeInfo.reps ++
+            },
+            incrementSetsBy1() {
+                this.storeInfo.sets ++
+            },
+            incrementWeightBy5() {
+                this.storeInfo.weight +=5
             },
             getMyCookies() {
                 var getCookie = cookies.get('loginData');
@@ -111,7 +134,7 @@ import cookies from 'vue-cookies'
             this.initialData();
         },
         watch: {
-            state:function() {
+            stateCurrent:function() {
                 this.addDataToStore();
             }
         }
