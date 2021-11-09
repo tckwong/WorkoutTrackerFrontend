@@ -1,13 +1,8 @@
 <template>
 <section>
     <div class="wrapper">
-        <div class="sidebar">
-            <ul>
-                <li><router-link class="navLink" to="/">Log In</router-link></li>
-                <li><router-link class="navLink" to="/">Log Out</router-link></li>
-                <!-- <li><router-link to="/DashboardView">Dashboard</router-link></li> -->
-                <li><router-link to="/WorkoutView">Workout</router-link></li>
-            </ul>
+        <div>
+            <img id="logo" src="@/assets/logo.png"/>
         </div>
     </div>
 </section>
@@ -49,6 +44,22 @@ import '../css/headerStyle.scss'
     }
 </script>
 
-<style scoped>
-
+<style lang="scss" scoped>
+    #logo {
+        display:block;
+        position:relative;
+        margin-left:auto;
+        margin-right:auto;
+        height: 300px;
+    }
+    h1:before {
+        position:absolute;
+        content: "";
+        top:130px;
+        left:20px;
+        display: block;
+        width: 25vw;
+        padding-top: 10px;
+        border-bottom: 1px solid white;
+        }
 </style>

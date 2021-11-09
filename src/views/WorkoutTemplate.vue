@@ -129,6 +129,7 @@ import WorkoutTemplateChild from '@/components/WorkoutTemplateChild.vue'
                         data : {
                             "loginToken": this.userToken,
                             "userId": this.userId,
+                            "workoutId": this.$route.params.workout
                         }
                 }).then(() => {
                     this.state = !this.state;

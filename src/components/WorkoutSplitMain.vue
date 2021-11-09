@@ -186,10 +186,10 @@ import WorkoutSplitChild from './WorkoutSplitChild.vue'
         position:fixed;
         bottom: 0;
         left: 0;
-        background-color: black;
+        background-color: #282121;
     }
     ul {
-        background-color: black;
+        background-color: #282121;
         list-style-type: none;
         margin: 0;
         padding: 0;
