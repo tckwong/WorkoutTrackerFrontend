@@ -1,6 +1,10 @@
 <template>
     <div>
-        <h1>{{ workoutTitle }}</h1>
+        <div class="flexContainer">
+            <h1>{{ workoutTitle }}</h1>
+            <img @click="goBack" src="@/assets/undoIcon.png" alt="back icon">
+        </div>
+        
         <WorkoutTemplateChild ref="search" v-for="exercise in allExerciseData" 
         :key="exercise.exerciseId"
         :exerciseIdP="exercise.exerciseId"
@@ -15,7 +19,14 @@
         />
         
         <button v-b-modal.modal-center @click="addExercise" class="addExerciseBtn">ADD EXERCISE</button>
-        <button @click="startWorkoutSession" class="addExerciseBtn">START WORKOUT</button>
+        <button @click="checkforSession" class="addExerciseBtn">START WORKOUT</button>
+
+        <b-modal v-model="showModal" title="There is an existing workout session" button-size="lg">
+            <p class="my-2">Do you want to resume current workout or start a new workout?</p>
+            <button @click="resumeWorkout">Resume Workout</button>
+            <button @click="startNewWorkout">New Workout</button>
+        </b-modal>
+
     </div>
 </template>
 
@@ -40,6 +51,7 @@ import WorkoutTemplateChild from '@/components/WorkoutTemplateChild.vue'
                 userId : null,
                 storeData: [],
                 storeJSON : [],
+                showModal : false,
             }
         },
         computed: {
@@ -48,6 +60,28 @@ import WorkoutTemplateChild from '@/components/WorkoutTemplateChild.vue'
             }
         },
         methods: {
+            resumeWorkout() {
+                this.$router.push({ name: 'CurrentWorkout' })
+            },
+            startNewWorkout() {
+                axios.request({
+                    url: `${process.env.VUE_APP_BASE_DOMAIN}/api/workout-session`,
+                    method: 'DELETE',
+                    headers : {
+                        'Content-Type': 'application/json'
+                    },
+                    data : {
+                        "loginToken" : this.userToken,
+                        'userId' : this.userId
+                    }
+                    
+                }).then(() => {
+                    this.startWorkoutSession();
+                    this.$router.push({ name: 'CurrentWorkout' });
+                }).catch((error) => {
+                    console.error("There was an error: " +error);
+                })
+            },
             retrieveWorkoutTitle() {
                 axios.request({
                     url: `${process.env.VUE_APP_BASE_DOMAIN}/api/workouts`,
@@ -71,7 +105,6 @@ import WorkoutTemplateChild from '@/components/WorkoutTemplateChild.vue'
                         "workoutId" : this.$route.params.workout
                     }
                 }).then((response) => {
-                    console.log(response)
                     this.allExerciseData = response.data;
                 }).catch((error) => {
                     console.error("There was an error: " +error);
@@ -80,9 +113,9 @@ import WorkoutTemplateChild from '@/components/WorkoutTemplateChild.vue'
             addExercise() {
                 this.exerciseRow = {
                     exerciseName: 'New Exercise',
-                    reps : null,
-                    sets : null,
-                    weight : null,
+                    reps : 1,
+                    sets : 1,
+                    weight : 1,
                 }
                 this.allExerciseData.push(this.exerciseRow);
             },
@@ -105,6 +138,25 @@ import WorkoutTemplateChild from '@/components/WorkoutTemplateChild.vue'
                     console.error("There was an error: " +error);
                 })
             },
+            checkforSession() {
+                axios.request({
+                    url: `${process.env.VUE_APP_BASE_DOMAIN}/api/workout-session`,
+                    method: 'GET',
+                    params : {
+                        "userId" : this.userId
+                    }
+                    
+                }).then((response) => {
+                    if (response.data != "") {
+                        this.showModal = true;
+                    }else{
+                        this.startWorkoutSession();
+                    }
+                }).catch((error) => {
+                    console.error("There was an error: " +error);
+                })
+            },
+    
             loadCurrWorkout() {
                 axios.request({
                     url: `${process.env.VUE_APP_BASE_DOMAIN}/api/exercises`,
@@ -120,6 +172,9 @@ import WorkoutTemplateChild from '@/components/WorkoutTemplateChild.vue'
 
                     console.error("There was an error: " +error);
                 })
+            },
+            goBack() {
+                this.$router.push({ name: 'WorkoutSplit' });
             },
             getMyCookies() {
                 const getCookie = cookies.get('loginData');
@@ -162,4 +217,21 @@ import WorkoutTemplateChild from '@/components/WorkoutTemplateChild.vue'
         position:relative;
         top:1px;
     }
+
+    .flexContainer {
+        display: grid;
+        grid-template-columns: 1fr .15fr;
+        background-color: #282121;
+        h1 {
+            align-self: center;
+            padding-left:10px;
+        }
+        img {
+        height: 50px;
+        align-self: center;
+        filter: invert(100%);
+        cursor: pointer;
+    }
+    }
+    
 </style>

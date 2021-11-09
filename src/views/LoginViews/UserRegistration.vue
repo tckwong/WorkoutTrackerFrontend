@@ -1,48 +1,57 @@
 <template>
-  <div>
+  <section>
     <div>
-      <b-form>
-        <b-form-group
-          id="input-group-1"
-          label="Email address:"
-          label-for="input-1"
-          description="We'll never share your email with anyone else."
-        >
+      <h1 class="heading">USER REGISTRATION</h1>
+      <b-form class="formContainer">
+          <b-form-group
+            id="inputGroup"
+            label="Email address:"
+            label-for="input-1"
+            description="We'll never share your email with anyone else."
+          >
+            <b-col
+              sm="auto">
+              <b-form-input
+                id="input1"
+                v-model="email"
+                type="email"
+                placeholder="Enter email"
+                required
+              ></b-form-input>
+            </b-col>
+          </b-form-group>
+    
+        <b-form-group id="inputGroup" label="Username:" label-for="input-2">
           <b-form-input
-            id="input-1"
-            v-model="email"
-            type="email"
-            placeholder="Enter email"
-            required
-          ></b-form-input>
-        </b-form-group>
-
-        <b-form-group id="input-group-2" label="Username:" label-for="input-2">
-          <b-form-input
-            id="input-2"
+            id="input1"
             v-model="username"
             placeholder="Enter username"
             required
           ></b-form-input>
         </b-form-group>
 
-        <b-form-group id="input-group-2" label="Password:" label-for="input-2">
+        <b-form-group id="inputGroup" label="Password:" label-for="input-2">
           <b-form-input
-            id="input-2"
+            id="input1"
             v-model="password"
             placeholder="Enter password"
             required
           ></b-form-input>
         </b-form-group>
-        <b-button @click="registerUser" type="submit" variant="primary">Submit</b-button>
-        <b-button type="reset" variant="danger">Reset</b-button>
+        <div id="buttonContainer">
+          <b-button class="buttons" @click="registerUser" type="submit" variant="primary">Submit</b-button>
+          <b-button @click="gobacktoLogin" class="buttons" variant="danger">Go Back</b-button>
+        </div>
+        
       </b-form>
     </div>
-  </div>
+  </section>
 </template>
 
 <script>
 import axios from "axios"
+import '../../css/general.scss'
+
 export default {
     name: "UserRegistration",
     data: () => {
@@ -66,20 +75,41 @@ export default {
                     "username" : this.username,
                     "password" : this.password
                 }
-
             }).then((response) => {
                 console.log(response)
-                this.$router.push({ name: 'LoginView' });
+                this.$router.push({ name: 'Login' });
                 
             }).catch((error) => {
                 console.error("There was an error with your api request: " + error);
             })
         },
+        gobacktoLogin() {
+          this.$router.push({ name: 'Login' });
+        }
     }
 };
 
 </script>
 
 <style lang="scss" scoped>
+  section > div {
+    height: 100vh;
+  }
+  .formContainer {
+    padding-left: 10vw;
+     padding-right:10vw;
+  }
+  .heading {
+    text-align: center;
+    padding-top: 10vh;
+    padding-bottom:5vh;
+  }
+  .buttons {
+    float: right;
+    margin-top: 20px;
+  }
 
+  .buttons:nth-child(2) {
+    margin-right: 10px;
+  }
 </style>

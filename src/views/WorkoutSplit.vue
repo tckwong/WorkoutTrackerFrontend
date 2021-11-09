@@ -14,6 +14,6 @@ import Header from '@/components/Header.vue'
             Header,
             WorkoutSplitMain
         },
-
+    
     }   
 </script>

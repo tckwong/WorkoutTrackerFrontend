@@ -6,3 +6,13 @@
                         // "sets" : this.getExerciseData.storeSet,
                         // "weight" : this.getExerciseData.storeWeight,
                         // "workoutId" : this.workoutId
+
+
+ // const addKeyObj = {};
+                    // for (let i=0; i<response.data.length; i++){
+                    //     addKeyObj = {
+                    //         uniqueKey: i
+                    //     }
+                    // this.completedWorkoutData.push(addKeyObj);
+                    // }
+                    // console.log(response)

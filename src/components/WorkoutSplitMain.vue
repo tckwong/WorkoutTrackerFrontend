@@ -17,12 +17,7 @@
         <h2>Current Workout</h2>
             <b-button v-b-toggle href="#example-sidebar" @click.prevent>Toggle Sidebar</b-button>
             <div>
-            <b-button v-b-toggle:my-collapse>
-                <span class="when-open">Close</span><span class="when-closed">Open</span>
-            </b-button>
-            <b-collapse id="my-collapse">
-            <h1>HELLO</h1>
-            </b-collapse>
+            
             <b-sidebar id="example-sidebar" title="Sidebar" shadow>
             <div class="px-3 py-2">
                 Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis
@@ -39,6 +34,7 @@
                     </b-modal>
                     </li>
                     <li><img @click="$router.push({name: 'WorkoutHistory'})" src="@/assets/historyIcon.png"></li>
+                    <li><img @click="logOutUser" src="@/assets/logoutIcon.png"></li>
                 </ul>
             </div>
     </div>
@@ -135,10 +131,33 @@ import WorkoutSplitChild from './WorkoutSplitChild.vue'
             goToHistory() {
                 this.$router.push({name: 'WorkoutHistory'});
             },
+            logOutUser() {
+                axios.request({
+                    url: `${process.env.VUE_APP_BASE_DOMAIN}/api/login`,
+                    method: 'DELETE',
+                    headers : {
+                        'X-Api-Key' : process.env.VUE_APP_API_KEY,
+                    },
+                    data : {
+                        "loginToken" : this.userToken,
+                    }
+
+                }).then(() => {
+                    cookies.remove('loginData');
+                    this.$router.push({ name: 'Login' });
+                }).catch((error) => { 
+                    console.error("There was an error: " +error);
+                })
+            },
             getMyCookies() {
                 const getCookie = cookies.get('loginData');
-                this.userToken = getCookie.loginToken;
-                this.userEmail = getCookie.email;
+                if (getCookie == null) {
+                    this.$router.push({ name: 'Login' });
+                }else {
+                    
+                    this.userToken = getCookie.loginToken;
+                    this.userEmail = getCookie.email;
+                }
             },
         },
         mounted() {
@@ -181,11 +200,13 @@ import WorkoutSplitChild from './WorkoutSplitChild.vue'
             list-style-type: none;
             padding: 25px;
             border-bottom:none;
-            border-right: 1px solid grey;
+            margin-right: 5px;
             img {
-            width:10vw;
-            cursor:pointer;
-        }
+                width:10vw;
+                border-right: 1px solid grey;
+                cursor:pointer;
+                margin-right: 5px;
+            }
         }
         
 

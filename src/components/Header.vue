@@ -40,9 +40,6 @@ import '../css/headerStyle.scss'
                     console.error("There was an error: " +error);
                 })
             },
-            toggleTheme() {
-                this.$vuetify.theme.dark = !this.$vuetify.theme.dark
-            },
             getMyCookies() {
                 var getCookie = cookies.get('loginData');
                 this.userToken = getCookie.loginToken;

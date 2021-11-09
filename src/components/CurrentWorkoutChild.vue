@@ -1,45 +1,49 @@
 <template>
     <section>
-        <b-card
-            header-text-variant="white"
-            header-tag="header"
-            header-bg-variant="dark"
-            style="max-width: 100vw;"
-        >
-        <b-col sm="3">
-            <b-card-title>{{ storeInfo.exerciseName }}</b-card-title>
-        </b-col>
-        <div class="grid-container">
-            <p>Reps:</p>
-            <p>Sets:</p>
-            <p>Weight:</p>
-            <label class="container">
-            <input type="checkbox" checked="checked">
-            <span class="checkmark"></span>
-            </label>
-            <!-- <b-button @click="deleteExercise">X</b-button> -->
-            
-            <b-col class="inputBoxWidth" sm="2">
-                <b-row>
-                    <b-form-input id="inline-form" v-model="storeInfo.reps" placeholder="0"></b-form-input>
-                    <button @click="incrementRepsBy1" class="incrementbtn1">+1</button>
-                </b-row>
-            </b-col>
+        <div>
+            <h3>{{exerciseNameP}}</h3>
+            <!-- <b-collapse id="accordion" v-model="myAccordianState" accordion="my-accordion" role="tabpanel"> -->
+                <b-card
+                    header-text-variant="white"
+                    header-tag="header"
+                    header-bg-variant="dark"
+                    style="max-width: 100vw;"
+                >
+                <b-col sm="3">
+                    <b-card-title>{{ storeInfo.exerciseName }}</b-card-title>
+                </b-col>
+                <div class="grid-container">
+                    <p>Reps:</p>
+                    <p>Sets:</p>
+                    <p>Weight:</p>
+                    <b-button v-b-toggle.accordion @click="changeAccordianState">Next</b-button>
+                    
+                    <b-col class="inputBoxWidth" sm="2">
+                        <b-row>
+                            <b-form-input id="inline-form" v-model="storeInfo.reps" placeholder="0"></b-form-input>
+                            <button @click="incrementRepsBy1" class="incrementbtn1">+1</button>
+                            <button @click="decrementRepsBy1" class="incrementbtn1">-1</button>
+                        </b-row>
+                    </b-col>
 
-            <b-col class="inputBoxWidth" sm="2">
-                <b-row>
-                    <b-form-input v-model="storeInfo.sets" placeholder="0"></b-form-input>
-                    <button @click="incrementSetsBy1" class="incrementbtn1">+1</button>
-                </b-row>
-            </b-col>
-            <b-col class="inputBoxWidth" sm="2">
-                <b-row>
-                    <b-form-input v-model="storeInfo.weight" placeholder="0"></b-form-input>
-                    <button @click="incrementWeightBy5" class="incrementbtn1">+5</button>
-                </b-row>
-            </b-col>
+                    <b-col class="inputBoxWidth" sm="2">
+                        <b-row>
+                            <b-form-input v-model="storeInfo.sets" placeholder="0"></b-form-input>
+                            <button @click="incrementSetsBy1" class="incrementbtn1">+1</button>
+                            <button @click="decrementSetsBy1" class="incrementbtn1">-1</button>
+                        </b-row>
+                    </b-col>
+                    <b-col class="inputBoxWidth" sm="2">
+                        <b-row>
+                            <b-form-input v-model="storeInfo.weight" placeholder="0"></b-form-input>
+                            <button @click="incrementWeightBy5" class="incrementbtn1">+5</button>
+                            <button @click="decrementWeightBy5" class="incrementbtn1">-5</button>
+                        </b-row>
+                    </b-col>
+                </div>
+                </b-card>
+            <!-- </b-collapse>  -->
         </div>
-        </b-card>
     </section>
 </template>
 
@@ -57,7 +61,7 @@ import cookies from 'vue-cookies'
             setsP : Number,
             weightP : Number,
             userIdP : Number,
-            stateCurrent : Boolean,
+
 
         },
         data: () => {
@@ -73,13 +77,22 @@ import cookies from 'vue-cookies'
                     userId: null,
                     loginToken: null,
                     exerciseName: null,
-                    reps: null,
-                    sets: null,
-                    weight: null,
-                }
+                    reps: 1,
+                    sets: 1,
+                    weight: 1,
+                },
             }
         },
         methods: {
+            changeAccordianState() {
+                this.$emit('notifyParentChangeState');
+            },
+            expandAccordian() {
+                this.myAccordianState = true
+            },
+            collapseAccordian() {
+                this.myAccordianState = false
+            },
             deleteExercise() {
                 axios.request({
                     url: `${process.env.VUE_APP_BASE_DOMAIN}/api/exercises`,
@@ -117,11 +130,20 @@ import cookies from 'vue-cookies'
             incrementRepsBy1() {
                 this.storeInfo.reps ++
             },
+            decrementRepsBy1() {
+                this.storeInfo.reps --
+            },
             incrementSetsBy1() {
                 this.storeInfo.sets ++
             },
+            decrementSetsBy1() {
+                this.storeInfo.sets --
+            },
             incrementWeightBy5() {
                 this.storeInfo.weight +=5
+            },
+            decrementWeightBy5() {
+                this.storeInfo.weight -=5
             },
             getMyCookies() {
                 var getCookie = cookies.get('loginData');
@@ -161,6 +183,9 @@ import cookies from 'vue-cookies'
     }
     .inputBoxWidth {
         width: 50px;
+    }
+    h3 {
+        color: white;
     }
     
 </style>

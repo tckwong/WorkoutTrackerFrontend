@@ -1,5 +1,10 @@
 <template>
     <div>
+        <div :class="{ 'navbar--hidden': !showNavbar }" class="navbar">
+            <button v-scroll-reveal.reset="{ delay: 250 }" @click="addExercise" class="addExerciseBtn">ADD EXERCISE</button>
+            <button v-scroll-reveal.reset="{ delay: 250 }" @click="changeState" class="finishBtn">FINISH WORKOUT</button>
+            <button v-scroll-reveal.reset="{ delay: 250 }" @click="endWorkout" class="addExerciseBtn endWorkoutBtn">ABORT WORKOUT</button>
+        </div>
         <CurrentWorkoutChild ref="search" v-for="exercise in allExerciseData" 
         :key="exercise.exerciseId"
         :exerciseIdP="exercise.exerciseId"
@@ -9,13 +14,10 @@
         :weightP="exercise.weight"
         :workoutTitleP="exercise.workoutTitle"
         :userIdP="exercise.userId"
-        :stateCurrent="stateCurrent"
+        :accordState="exercise.accordState"
         @notifyParentDeleteExercise="retrieveExercises"
         />
-        <button v-scroll-reveal.reset="{ delay: 250 }" @click="addExercise" class="addExerciseBtn">ADD EXERCISE</button>
-        <button v-scroll-reveal.reset="{ delay: 250 }" @click="changeState" class="addExerciseBtn finishBtn">FINISH WORKOUT</button>
-        <button v-scroll-reveal.reset="{ delay: 250 }" @click="endWorkout" class="addExerciseBtn endWorkoutBtn">END WORKOUT</button>
-        <!-- {{getExerciseData}} -->
+
     </div>
 </template>
 
@@ -40,6 +42,9 @@ import '../css/currentWorkoutStyle.scss'
                 storeData: [],
                 storeJSON : [],
                 userId : null,
+
+                showNavbar: true,
+                lastScrollPosition: 0,
             }
         },
         computed: {
@@ -47,7 +52,26 @@ import '../css/currentWorkoutStyle.scss'
                 return this.$store.state.currWorkoutData
             }
         },
+        
         methods: {
+        onScroll () {
+                // Get the current scroll position
+                const currentScrollPosition = window.pageYOffset || document.documentElement.scrollTop
+                // Because of momentum scrolling on mobiles, we shouldn't continue if it is less than zero
+                if (currentScrollPosition < 0) {
+                return
+                }
+                this.showNavbar = currentScrollPosition < this.lastScrollPosition
+                // Set the current scroll position as the last scroll position
+                this.lastScrollPosition = currentScrollPosition
+            },
+            handleScroll () {
+                if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                document.getElementById("navbar").style.top = "0";
+                } else {
+                document.getElementById("navbar").style.top = "-150px";
+                }
+            },
             retrieveExercises() {
                 axios.request({
                     url: `${process.env.VUE_APP_BASE_DOMAIN}/api/current-workout`,
@@ -57,8 +81,19 @@ import '../css/currentWorkoutStyle.scss'
                     }
                 }).then((response) => {
                     console.log(response)
+                    const accordianState = 
+                        {
+                            accordState : ""
+                        };
                     for (let i=0; i<response.data.length; i++){
                         response.data[i].userId = this.userId;
+                        if (i == 0) {
+                            response.data[i].accordState = true;
+
+                        }else{
+                            response.data[i].accordState = false;
+                        }
+                    console.log(accordianState);
                     }
                     this.allExerciseData = response.data;
                 }).catch((error) => {
@@ -68,9 +103,9 @@ import '../css/currentWorkoutStyle.scss'
             addExercise() {
                 this.exerciseRow = {
                     exerciseName: 'New Exercise',
-                    reps : null,
-                    sets : null,
-                    weight : null,
+                    reps : 1,
+                    sets : 1,
+                    weight : 1,
                     userId : this.userId,
 
                 }
@@ -140,30 +175,37 @@ import '../css/currentWorkoutStyle.scss'
         async mounted() {
             await this.retrieveExercises();
             this.getMyCookies();
+            window.addEventListener('scroll', this.onScroll)
         },
+        beforeDestroy () {
+            window.removeEventListener('scroll', this.onScroll)
+}
     }
 </script>
 
-
 <style lang="scss" scoped>
+
+    div > button {
+        display:inline-block;
+        cursor:pointer;
+        color:#ffffff;
+        font-family:Arial;
+        font-size:15px;
+        font-weight:bold;
+        padding:6px 24px;
+        margin-left: 10px;
+        text-decoration:none;
+    }
+    
     .addExerciseBtn {
     position: fixed;
-    top: 5px;
-    right: 0;
+    top: 1px;
+    right: 1px;
 	box-shadow:inset 0px 1px 0px 0px #f7c5c0;
 	background:linear-gradient(to bottom, #fc8d83 5%, #e4685d 100%);
 	background-color:#fc8d83;
 	border-radius:6px;
 	border:1px solid #d83526;
-	display:inline-block;
-	cursor:pointer;
-	color:#ffffff;
-	font-family:Arial;
-	font-size:15px;
-	font-weight:bold;
-	padding:6px 24px;
-    margin-left: 10px;
-	text-decoration:none;
 	text-shadow:0px 1px 0px #b23e35;
     }
     .addExerciseBtn:hover {
@@ -172,11 +214,49 @@ import '../css/currentWorkoutStyle.scss'
     }
 
     .finishBtn {
-        top: 45px;
-        right: 0;
+        top: 1px;
+        right: 15vw;
+        position: fixed;
+        box-shadow:inset 0px 1px 0px 0px #f7c5c0;
+        background:linear-gradient(to bottom, #329404 5%, #85ddaa 100%);
+        background-color:#fc8d83;
+        border-radius:6px;
+        border:1px solid #00ff6a;
+        display:inline-block;
+        cursor:pointer;
+        color:#ffffff;
+        font-family:Arial;
+        font-size:15px;
+        font-weight:bold;
+        padding:6px 24px;
+        margin-left: 10px;
+        text-decoration:none;
+        text-shadow:0px 1px 0px #b23e35;
+        
+    .finishBtn:hover {
+        background:linear-gradient(to bottom, #cdebbf 5%, #7cdd8c 100%);
+        background-color:#1cc254;
+        }
     }
+    
     .endWorkoutBtn {
-        top: 85px;
-        right: 0;
+        top: 1px;
+        right: 35vw;
     }
+    .navbar {
+        z-index:5;
+        height: 60px;
+        width: 100vw;
+        background: hsl(200, 50%, 50%);
+        position: fixed;
+        top:-60px;
+        box-shadow: 0 2px 15px rgba(71, 120, 120, 0.5);
+        transform: translate3d(0, 0, 0);
+        transition: 0.1s all ease-out;
+        }
+    .navbar.navbar--hidden {
+        box-shadow: none;
+        transform: translate3d(0, +100%, 0);
+}
+
 </style>

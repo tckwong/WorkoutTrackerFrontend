@@ -42,7 +42,6 @@ import cookies from 'vue-cookies'
             weightP : Number,
             userIdP : Number,
             state : Boolean,
-
         },
         data: () => {
             return {
@@ -55,9 +54,9 @@ import cookies from 'vue-cookies'
                     workoutId: null,
                     loginToken: null,
                     exerciseName: null,
-                    reps: null,
-                    sets: null,
-                    weight: null,
+                    reps: 1,
+                    sets: 1,
+                    weight: 1,
                 }
             }
         },
