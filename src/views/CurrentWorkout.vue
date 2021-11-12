@@ -5,8 +5,9 @@
             <button v-scroll-reveal.reset="{ delay: 250 }" @click="changeState" class="finishBtn">FINISH WORKOUT</button>
             <button v-scroll-reveal.reset="{ delay: 250 }" @click="endWorkout" class="addExerciseBtn endWorkoutBtn">ABORT WORKOUT</button>
         </div>
-        <CurrentWorkoutChild ref="search" v-for="exercise in allExerciseData" 
+        <CurrentWorkoutChild v-for="(exercise, index) in allExerciseData" 
         :key="exercise.exerciseId"
+        :index="index"
         :exerciseIdP="exercise.exerciseId"
         :exerciseNameP="exercise.exerciseName"
         :repsP="exercise.reps"
@@ -17,7 +18,8 @@
         :accordState="exercise.accordState"
         @notifyParentDeleteExercise="retrieveExercises"
         />
-
+        <!-- Workout Timer -->
+        <h2>{{ hours }}:{{minutes}}:{{ seconds }}</h2>
     </div>
 </template>
 
@@ -26,6 +28,7 @@ import axios from 'axios'
 import cookies from 'vue-cookies'
 import CurrentWorkoutChild from '@/components/CurrentWorkoutChild.vue'
 import '../css/currentWorkoutStyle.scss'
+// import moment from 'moment'
 
     export default {
         name: 'WorkoutTemplate',
@@ -42,19 +45,30 @@ import '../css/currentWorkoutStyle.scss'
                 storeData: [],
                 storeJSON : [],
                 userId : null,
-
                 showNavbar: true,
                 lastScrollPosition: 0,
+                // timer variables
+                startTime: "00:00:00",
+                end: null,
+                currentTime : null,
+                timeDiff : null,
+                days : null,
+                hours : null,
+                minutes : null,
+                seconds : null,
             }
         },
         computed: {
             getExerciseData: function() {
                 return this.$store.state.currWorkoutData
+            },
+            getStartTime() {
+                return this.$store.state.workoutSessionStartTime
             }
         },
         
         methods: {
-        onScroll () {
+            onScroll () {
                 // Get the current scroll position
                 const currentScrollPosition = window.pageYOffset || document.documentElement.scrollTop
                 // Because of momentum scrolling on mobiles, we shouldn't continue if it is less than zero
@@ -80,20 +94,17 @@ import '../css/currentWorkoutStyle.scss'
                         "workoutId" : this.$route.params.workout
                     }
                 }).then((response) => {
-                    console.log(response)
-                    const accordianState = 
-                        {
-                            accordState : ""
-                        };
+                    // const accordianState = 
+                    //     {
+                    //         accordState : ""
+                    //     };
                     for (let i=0; i<response.data.length; i++){
                         response.data[i].userId = this.userId;
                         if (i == 0) {
                             response.data[i].accordState = true;
-
                         }else{
                             response.data[i].accordState = false;
                         }
-                    console.log(accordianState);
                     }
                     this.allExerciseData = response.data;
                 }).catch((error) => {
@@ -113,7 +124,7 @@ import '../css/currentWorkoutStyle.scss'
             },
             changeState() {
                 this.stateCurrent = !this.stateCurrent;
-                setTimeout(this.finishWorkout, 100);
+                setTimeout(this.finishWorkout, 200);
             },
             endWorkout() {
                 axios.request({
@@ -171,11 +182,46 @@ import '../css/currentWorkoutStyle.scss'
                 this.userToken = getCookie.loginToken;
                 this.userId = getCookie.userId;
             },
+            updateTime() {
+            
+                var startTime = localStorage.getItem("sessionStartTime");
+
+                this.currentTime = startTime;
+
+                setInterval(() => {
+                var today2 = new Date();
+                this.timeDiff = Math.abs(today2 - this.currentTime);
+                this.calcTime(this.timeDiff);
+                }, 1000);
+            },
+            calcTime(dist) {
+                // Time calculations for days, hours, minutes and seconds
+                var d = Math.floor(dist / (1000 * 60 * 60 * 24));
+                var h = Math.floor((dist % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                var m = Math.floor((dist % (1000 * 60 * 60)) / (1000 * 60));
+                var s = Math.floor((dist % (1000 * 60)) / 1000);
+                
+                this.days = this.checkTime(d);
+                this.hours = this.checkTime(h);
+                this.minutes = this.checkTime(m);
+                this.seconds = this.checkTime(s);
+            },
+            checkTime: function(i) {
+                // add zero in front of numbers < 10
+                if (i < 10) {
+                    i = "0" + i
+                }  
+                return i;
+            }
+        },
+        created() {
+            this.getMyCookies();
         },
         async mounted() {
             await this.retrieveExercises();
-            this.getMyCookies();
             window.addEventListener('scroll', this.onScroll)
+            this.updateTime();
+            
         },
         beforeDestroy () {
             window.removeEventListener('scroll', this.onScroll)

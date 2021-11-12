@@ -81,6 +81,7 @@ import cookies from 'vue-cookies'
                 })
             },
             addDataToStore() {
+                // Updates store with 'storeInfo'. All data updated via v-model
                 this.$store.dispatch('loadItems',this.storeInfo)
             },
             initialData() {
@@ -104,7 +105,7 @@ import cookies from 'vue-cookies'
             this.initialData();
         },
         watch: {
-            state:function() {
+            state() {
                 this.addDataToStore();
             }
         }

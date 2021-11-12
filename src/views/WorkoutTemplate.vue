@@ -26,7 +26,6 @@
             <button @click="resumeWorkout">Resume Workout</button>
             <button @click="startNewWorkout">New Workout</button>
         </b-modal>
-
     </div>
 </template>
 
@@ -77,7 +76,6 @@ import WorkoutTemplateChild from '@/components/WorkoutTemplateChild.vue'
                     
                 }).then(() => {
                     this.startWorkoutSession();
-                    this.$router.push({ name: 'CurrentWorkout' });
                 }).catch((error) => {
                     console.error("There was an error: " +error);
                 })
@@ -132,8 +130,12 @@ import WorkoutTemplateChild from '@/components/WorkoutTemplateChild.vue'
                             "workoutId": this.$route.params.workout
                         }
                 }).then(() => {
+                    // State change alerts child to add its existing data to vue Store
                     this.state = !this.state;
-                    setTimeout(this.loadCurrWorkout, 100);
+                    this.currentTime = new Date();
+                    var curTime = Date.parse(this.currentTime);
+                    localStorage.setItem("sessionStartTime", curTime);
+                    setTimeout(this.loadCurrWorkout, 200);
 
                 }).catch((error) => {
                     console.error("There was an error: " +error);
@@ -157,7 +159,6 @@ import WorkoutTemplateChild from '@/components/WorkoutTemplateChild.vue'
                     console.error("There was an error: " +error);
                 })
             },
-    
             loadCurrWorkout() {
                 axios.request({
                     url: `${process.env.VUE_APP_BASE_DOMAIN}/api/exercises`,
@@ -170,7 +171,6 @@ import WorkoutTemplateChild from '@/components/WorkoutTemplateChild.vue'
                 }).then(() => {
                     this.$router.push({ name: 'CurrentWorkout' });
                 }).catch((error) => {
-
                     console.error("There was an error: " +error);
                 })
             },

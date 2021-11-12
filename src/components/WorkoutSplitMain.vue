@@ -14,16 +14,22 @@
             @notifyParentDeleteWorkout="retrieveWorkouts"
             />
         </div>
-        <h2>Current Workout</h2>
-            <b-button v-b-toggle href="#example-sidebar" @click.prevent>Toggle Sidebar</b-button>
-            <div>
-            
-            <b-sidebar id="example-sidebar" title="Sidebar" shadow>
-            <div class="px-3 py-2">
-                Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis
-                in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
-            </div>
-            </b-sidebar>
+            <div v-if="activeWorkoutToggle">
+                <b-card no-body class="overflow-hidden" style="max-width: 540px;">
+                    <b-row no-gutters>
+                    <b-col md="6">
+                
+                    </b-col>
+                    <b-col md="6">
+                        <b-card-body title="Active Workout">
+                        <b-card-text>
+                            <button @click="resumeWorkout">Resume Workout</button>
+                            <button @click="endWorkoutSession">Cancel Workout</button>
+                        </b-card-text>
+                        </b-card-body>
+                    </b-col>
+                    </b-row>
+                </b-card>
             </div>
             <!-- Adding a bottom nav -->
             <div class="botton-nav-container">
@@ -37,6 +43,7 @@
                     <li><img @click="logOutUser" src="@/assets/logoutIcon.png"></li>
                 </ul>
             </div>
+            {{userId}}
     </div>
 </template>
 
@@ -67,7 +74,9 @@ import WorkoutSplitChild from './WorkoutSplitChild.vue'
                 userToken: null,
                 userId: null,
                 newWorkoutTitle: null,
-                modalShow: false
+                modalShow: false,
+                activeWorkoutToggle : false,
+                userIdResume : null,
                 
             }
         },
@@ -98,6 +107,7 @@ import WorkoutSplitChild from './WorkoutSplitChild.vue'
                     }
                 }).then((response) => {
                     this.allWorkoutData = response.data;
+                    this.checkforSession();
                 }).catch((error) => {
                     console.error("There was an error: " +error);
                 })
@@ -145,7 +155,56 @@ import WorkoutSplitChild from './WorkoutSplitChild.vue'
                 }).then(() => {
                     cookies.remove('loginData');
                     this.$router.push({ name: 'Login' });
-                }).catch((error) => { 
+                }).catch((error) => {
+                    console.error("There was an error: " +error);
+                })
+            },
+            checkforSession() {
+                axios.request({
+                    url: `${process.env.VUE_APP_BASE_DOMAIN}/api/workout-session`,
+                    method: 'GET',
+                    params : {
+                        "userId" : this.userId
+                    }
+                    
+                }).then((response) => {
+                    if (response.data != "") {
+                        this.activeWorkoutToggle = true;
+                    }
+                
+                }).catch((error) => {
+                    console.error("There was an error: " +error);
+                })
+            },
+            resumeWorkout() {
+                axios.request({
+                    url: `${process.env.VUE_APP_BASE_DOMAIN}/api/workout-session`,
+                    method: 'GET',
+                    params : {
+                        'userId' : this.userIdResume
+                    }
+                    }).then((response) => {
+                        this.$router.push({ name: 'CurrentWorkout',params: { workout: response.data.workoutId } });
+                    }).catch((error) => {
+                        console.error("There was an error: " +error);
+                    })
+
+                    },
+            endWorkoutSession() {
+                axios.request({
+                    url: `${process.env.VUE_APP_BASE_DOMAIN}/api/workout-session`,
+                    method: 'DELETE',
+                    headers : {
+                        'Content-Type': 'application/json'
+                    },
+                    data : {
+                        "loginToken" : this.userToken,
+                        'userId' : this.userId
+                    }
+                    
+                }).then(() => {
+                    this.activeWorkoutToggle = false;
+                }).catch((error) => {
                     console.error("There was an error: " +error);
                 })
             },
@@ -156,14 +215,14 @@ import WorkoutSplitChild from './WorkoutSplitChild.vue'
                 }else {
                     
                     this.userToken = getCookie.loginToken;
+                    this.userIdResume = getCookie.userId;
                     this.userEmail = getCookie.email;
                 }
             },
         },
-        mounted() {
-            this.retrieveUsers();
+        async mounted() {
+            await this.retrieveUsers();
             this.getMyCookies();
-            
         },
         
     }

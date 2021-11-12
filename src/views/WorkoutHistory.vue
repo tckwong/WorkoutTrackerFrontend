@@ -47,7 +47,6 @@ import WorkoutHistoryChild from '@/components/WorkoutHistoryChild.vue'
                     }
                 }).then((response) => {
                     for (const [index] of response.data.entries()) {
-                
                         this.workoutObj = {
                             workoutTitle : response.data[index].workoutTitle[index],
                             completedAt : response.data[index].completedAt[index],

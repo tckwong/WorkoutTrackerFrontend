@@ -2,7 +2,8 @@
     <section>
         <div>
             <h3>{{exerciseNameP}}</h3>
-            <!-- <b-collapse id="accordion" v-model="myAccordianState" accordion="my-accordion" role="tabpanel"> -->
+            <b-button v-b-toggle="'collapse-'+index" class="m-1">Show More</b-button>
+            <b-collapse :id="'collapse-'+index" visible >
                 <b-card
                     header-text-variant="white"
                     header-tag="header"
@@ -16,7 +17,7 @@
                     <p>Reps:</p>
                     <p>Sets:</p>
                     <p>Weight:</p>
-                    <b-button v-b-toggle.accordion @click="changeAccordianState">Next</b-button>
+                    <b-button v-b-toggle="'collapse-'+index" class="m-1">Show More</b-button>
                     
                     <b-col class="inputBoxWidth" sm="2">
                         <b-row>
@@ -42,7 +43,7 @@
                     </b-col>
                 </div>
                 </b-card>
-            <!-- </b-collapse>  -->
+            </b-collapse> 
         </div>
     </section>
 </template>
@@ -54,6 +55,7 @@ import cookies from 'vue-cookies'
     export default {
         name: 'CurrentWorkoutChild',
         props: {
+            index: Number,
             workoutTitleP : String,
             exerciseIdP : Number,
             exerciseNameP : String,
@@ -61,7 +63,6 @@ import cookies from 'vue-cookies'
             setsP : Number,
             weightP : Number,
             userIdP : Number,
-
 
         },
         data: () => {
@@ -84,9 +85,6 @@ import cookies from 'vue-cookies'
             }
         },
         methods: {
-            changeAccordianState() {
-                this.$emit('notifyParentChangeState');
-            },
             expandAccordian() {
                 this.myAccordianState = true
             },
