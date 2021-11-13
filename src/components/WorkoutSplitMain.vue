@@ -32,7 +32,7 @@
                 </b-card>
             </div>
             <!-- Adding a bottom nav -->
-            <div class="botton-nav-container">
+            <div class="bottomNavContainer">
                 <ul>
                     <li><img v-b-modal.modal-center @click="showModal" src="@/assets/plusIcon.png">
                         <b-modal ref="my-modal" id="modal-center" centered title="Name Your Workout" @ok="createWorkout">
@@ -43,7 +43,6 @@
                     <li><img @click="logOutUser" src="@/assets/logoutIcon.png"></li>
                 </ul>
             </div>
-            {{userId}}
     </div>
 </template>
 
@@ -235,39 +234,5 @@ import WorkoutSplitChild from './WorkoutSplitChild.vue'
         text-align: center;
         margin: 10px 0;
     }
-    .template-container {
-        border: 1px solid blue;
-    }
-    .collapsed > .when-open, .not-collapsed > .when-closed {
-        display: none;
-    }
-    .bottom-nav-container {
-        position:fixed;
-        bottom: 0;
-        left: 0;
-        background-color: #282121;
-    }
-    ul {
-        background-color: #282121;
-        list-style-type: none;
-        margin: 0;
-        padding: 0;
-        }
-
-        li {
-            display: inline;
-            list-style-type: none;
-            padding: 25px;
-            border-bottom:none;
-            margin-right: 5px;
-            img {
-                width:10vw;
-                border-right: 1px solid grey;
-                cursor:pointer;
-                margin-right: 5px;
-            }
-        }
-        
-
 
 </style>

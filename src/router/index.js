@@ -8,6 +8,7 @@ import UserRegistration from '../views/LoginViews/UserRegistration.vue'
 import CurrentWorkout from '../views/CurrentWorkout.vue'
 import WorkoutTemplate from '../views/WorkoutTemplate.vue'
 import WorkoutHistory from '../views/WorkoutHistory.vue'
+import Progress from '../views/Progress.vue'
 
 Vue.use(VueRouter)
 
@@ -51,6 +52,11 @@ const routes = [
     path: '/WorkoutHistory',
     name: 'WorkoutHistory',
     component: WorkoutHistory
+  },
+  {
+    path: '/Progress',
+    name: 'Progress',
+    component: Progress
   },
 ]
 

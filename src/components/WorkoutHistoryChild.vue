@@ -4,6 +4,7 @@
             <h3>{{workoutTitle}}</h3>
         </div>
         <div class="exerciseGridContainer">
+            <p>Completed on:</p>
             <p>{{ completedAtMonth }} {{ completedAtDay }} - {{ completedAtYear }} @ {{ completedAtTime }}</p>
             <b-button @click="getexerciseDetails" v-b-toggle="'collapse-'+index" class="m-1">Show More</b-button>
         </div>
@@ -16,7 +17,6 @@
             :sets="data.setsArr"
             :weight="data.weightArr"
             ></WorkoutHistoryExList>
-
         </b-collapse>
 
     </section>
@@ -116,6 +116,11 @@ import WorkoutHistoryExList from '@/components/WorkoutHistoryExList.vue'
 </script>
 
 <style lang="scss" scoped>
+    h3 {
+        margin-left: 10px;
+        padding-top:5px;
+        color:aliceblue;
+    }
     section > div {
         color: white;
     }
@@ -124,5 +129,12 @@ import WorkoutHistoryExList from '@/components/WorkoutHistoryExList.vue'
         display:grid;
         grid-template-columns: 1fr, 0.1fr;
         margin-top: 20px;
+        p {
+            margin-left: 10px;
+            margin-bottom: 0;
+        }
+        p:nth-child(2) {
+            margin-bottom: 5px;
+        }
     }
 </style>

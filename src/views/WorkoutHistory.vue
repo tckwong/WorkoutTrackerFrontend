@@ -1,9 +1,6 @@
 <template>
     <section>
         <h1>YOUR WORKOUT HISTORY</h1>
-        <div id="history-container">
-
-        </div>
         <WorkoutHistoryChild
             v-for="(data, index) in completedWorkoutData" 
             :key="index"
@@ -17,6 +14,14 @@
             :workoutTitle="data.workoutTitle"
             :userId="data.userId"
         ></WorkoutHistoryChild>
+
+        <div class="bottomNavContainer">
+                <ul>
+                    <li><img @click="$router.push({name: 'WorkoutSplit'})" src="@/assets/homeIcon.png"></li>
+                    <li><img @click="$router.push({name: 'WorkoutHistory'})" src="@/assets/historyIcon.png"></li>
+                    <li><img src="@/assets/logoutIcon.png"></li>
+                </ul>
+        </div>
     </section>
 </template>
 
@@ -78,12 +83,7 @@ import WorkoutHistoryChild from '@/components/WorkoutHistoryChild.vue'
 <style lang="scss" scoped>
     h1 {
         color: #e06a1c;
-    }
-
-    #history-container {
-        margin-left: auto;
-        margin-right: auto;
-        border: 1px 1px 1px 1px;
-        
+        padding:4vh 0;
+        text-align:center;
     }
 </style>

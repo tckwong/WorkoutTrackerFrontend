@@ -5,6 +5,7 @@ import store from './store'
 import { BootstrapVue, IconsPlugin, BootstrapVueIcons,VBTogglePlugin } from 'bootstrap-vue'
 import Vuelidate from 'vuelidate'
 import VueScrollReveal from 'vue-scroll-reveal'
+import VueCompositionAPI from '@vue/composition-api'
 
 // Import Bootstrap an BootstrapVue CSS files (order is important)
 import 'bootstrap/dist/css/bootstrap.css'
@@ -17,7 +18,7 @@ Vue.use(IconsPlugin)
 Vue.use(BootstrapVueIcons)
 Vue.use(VBTogglePlugin)
 Vue.use(Vuelidate)
-
+Vue.use(VueCompositionAPI)
 
 Vue.use(VueScrollReveal, {
   class: 'v-scroll-reveal', // A CSS class applied to elements with the v-scroll-reveal directive; useful for animation overrides.

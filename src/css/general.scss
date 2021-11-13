@@ -18,3 +18,37 @@ section {
         background-color: #282121;
     }
 }
+
+.bottomNavContainer {
+    position:fixed;
+    width:100vw;
+    height:10vh;
+    position: fixed;
+    bottom:0;
+    background-color: #282121;
+}
+ul {
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    justify-content: center;
+    align-content: center;
+    background-color: #282121;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    height:100%
+    }
+
+    li {
+        display: inline;
+        justify-self: center;
+        list-style-type: none;
+        border-bottom:none;
+        height:100%;
+        
+        img {
+            width:10vw;
+            cursor:pointer;
+            height:100%;
+        }
+    }
