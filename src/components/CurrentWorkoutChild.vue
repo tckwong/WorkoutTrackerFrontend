@@ -2,8 +2,8 @@
     <section>
         <div>
             <h3>{{exerciseNameP}}</h3>
-            <b-button v-b-toggle="'collapse-'+index" class="m-1">Show More</b-button>
-            <b-collapse :id="'collapse-'+index" visible >
+            <!-- <b-button v-b-toggle="'collapse-'+index" class="m-1">Show More</b-button> -->
+            <b-collapse :visible="collapsedVisible ? true : false" accordion="my-accordion" role="tabpanel">
                 <b-card
                     header-text-variant="white"
                     header-tag="header"
@@ -17,8 +17,7 @@
                     <p>Reps:</p>
                     <p>Sets:</p>
                     <p>Weight:</p>
-                    <b-button v-b-toggle="'collapse-'+index" class="m-1">Show More</b-button>
-                    
+                    <b-button @click="notifyChangeFocusNext" class="m-1">Next</b-button>
                     <b-col class="inputBoxWidth" sm="2">
                         <b-row>
                             <b-form-input id="inline-form" v-model="storeInfo.reps" placeholder="0"></b-form-input>
@@ -43,7 +42,8 @@
                     </b-col>
                 </div>
                 </b-card>
-            </b-collapse> 
+            </b-collapse>
+
         </div>
     </section>
 </template>
@@ -55,7 +55,7 @@ import cookies from 'vue-cookies'
     export default {
         name: 'CurrentWorkoutChild',
         props: {
-            index: Number,
+            index : Number,
             workoutTitleP : String,
             exerciseIdP : Number,
             exerciseNameP : String,
@@ -63,8 +63,9 @@ import cookies from 'vue-cookies'
             setsP : Number,
             weightP : Number,
             userIdP : Number,
-
+            collapsedVisible : Boolean
         },
+
         data: () => {
             return {
                 allExerciseData : [],
@@ -84,7 +85,16 @@ import cookies from 'vue-cookies'
                 },
             }
         },
+        computed: {
+            getCurrState() {
+                return this.$store.state.currentState
+            }
+
+        },
         methods: {
+            notifyChangeFocusNext() {
+                this.$emit('notifyChangeFocusNext',this.index);
+            },
             expandAccordian() {
                 this.myAccordianState = true
             },
@@ -154,7 +164,7 @@ import cookies from 'vue-cookies'
             this.initialData();
         },
         watch: {
-            stateCurrent:function() {
+            getCurrState () {
                 this.addDataToStore();
             }
         }

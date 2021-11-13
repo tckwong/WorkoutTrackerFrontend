@@ -1,10 +1,5 @@
 <template>
     <div>
-        <div :class="{ 'navbar--hidden': !showNavbar }" class="navbar">
-            <button v-scroll-reveal.reset="{ delay: 250 }" @click="addExercise" class="addExerciseBtn">ADD EXERCISE</button>
-            <button v-scroll-reveal.reset="{ delay: 250 }" @click="changeState" class="finishBtn">FINISH WORKOUT</button>
-            <button v-scroll-reveal.reset="{ delay: 250 }" @click="endWorkout" class="addExerciseBtn endWorkoutBtn">ABORT WORKOUT</button>
-        </div>
         <CurrentWorkoutChild v-for="(exercise, index) in allExerciseData" 
         :key="exercise.exerciseId"
         :index="index"
@@ -15,11 +10,27 @@
         :weightP="exercise.weight"
         :workoutTitleP="exercise.workoutTitle"
         :userIdP="exercise.userId"
-        :accordState="exercise.accordState"
+        :collapsedVisible="exercise.collapsedVisible"
+        :stateCurrent="exercise.stateCurrent"
         @notifyParentDeleteExercise="retrieveExercises"
+        @notifyChangeFocusNext="changeFocusNext"
         />
         <!-- Workout Timer -->
-        <h2>{{ hours }}:{{minutes}}:{{ seconds }}</h2>
+        <div>
+            <h2>{{ hours }}:{{minutes}}:{{ seconds }}</h2>
+        </div>
+        <div class="bottomNavContainer">
+                <ul>
+                    <li><img v-b-modal.modal-center @click="showModal" src="@/assets/plusIcon.png">
+                        <b-modal ref="my-modal" id="modal-center" centered title="Name The Exercise" @ok="addExercise">
+                        <input v-model="newExerciseName" type="text">
+                    </b-modal>
+                    </li>
+                    <li><button v-scroll-reveal.reset="{ delay: 250 }" @click="abortWorkout" class="addExerciseBtn endWorkoutBtn">ABORT WORKOUT</button></li>
+                    <li><button v-scroll-reveal.reset="{ delay: 250 }" @click="changeState" class="finishBtn">FINISH WORKOUT</button></li>
+                </ul>
+        </div>
+        
     </div>
 </template>
 
@@ -47,6 +58,7 @@ import '../css/currentWorkoutStyle.scss'
                 userId : null,
                 showNavbar: true,
                 lastScrollPosition: 0,
+                newExerciseName: null,
                 // timer variables
                 startTime: "00:00:00",
                 end: null,
@@ -66,8 +78,14 @@ import '../css/currentWorkoutStyle.scss'
                 return this.$store.state.workoutSessionStartTime
             }
         },
-        
         methods: {
+            showModal() {
+                this.$refs['my-modal'].show()
+            },
+            changeFocusNext(childIndex) {
+                this.allExerciseData[childIndex].collapsedVisible = false;
+                this.allExerciseData[childIndex+1].collapsedVisible = true;
+            },
             onScroll () {
                 // Get the current scroll position
                 const currentScrollPosition = window.pageYOffset || document.documentElement.scrollTop
@@ -94,26 +112,23 @@ import '../css/currentWorkoutStyle.scss'
                         "workoutId" : this.$route.params.workout
                     }
                 }).then((response) => {
-                    // const accordianState = 
-                    //     {
-                    //         accordState : ""
-                    //     };
-                    for (let i=0; i<response.data.length; i++){
-                        response.data[i].userId = this.userId;
-                        if (i == 0) {
-                            response.data[i].accordState = true;
-                        }else{
-                            response.data[i].accordState = false;
-                        }
-                    }
                     this.allExerciseData = response.data;
+
+                    for (let i=0; i<this.allExerciseData.length; i++){
+                        if (i == 0) {
+                            this.allExerciseData[i].collapsedVisible = true;
+                        }else{
+                            this.allExerciseData[i].collapsedVisible = false;
+                        }
+                    }   
+
                 }).catch((error) => {
                     console.error("There was an error: " +error);
                 })
             },
             addExercise() {
                 this.exerciseRow = {
-                    exerciseName: 'New Exercise',
+                    exerciseName: this.newExerciseName,
                     reps : 1,
                     sets : 1,
                     weight : 1,
@@ -124,9 +139,10 @@ import '../css/currentWorkoutStyle.scss'
             },
             changeState() {
                 this.stateCurrent = !this.stateCurrent;
-                setTimeout(this.finishWorkout, 200);
+                this.$store.commit('updateState', this.stateCurrent)
+                setTimeout(this.finishWorkout, 300);
             },
-            endWorkout() {
+            abortWorkout() {
                 axios.request({
                     url: `${process.env.VUE_APP_BASE_DOMAIN}/api/workout-session`,
                     method: 'DELETE',
@@ -137,8 +153,7 @@ import '../css/currentWorkoutStyle.scss'
                         "loginToken" : this.userToken,
                         "userId" : this.userId
                     }
-                }).then((response) => {
-                    console.log(response)
+                }).then(() => {
                     this.$router.push({ name: 'WorkoutSplit' });
                 }).catch((error) => {
                     console.error("There was an error: " +error);
@@ -147,6 +162,23 @@ import '../css/currentWorkoutStyle.scss'
             finishWorkout() {
                 axios.request({
                     url: `${process.env.VUE_APP_BASE_DOMAIN}/api/current-workout`,
+                    method: 'POST',
+                    headers : {
+                        'Content-Type': 'application/json'
+                    },
+                    // Children emits all data to this component through the store
+                    data : JSON.stringify(this.$store.state.currWorkoutData)
+                    
+                }).then(() => {
+                    this.updateExerciseTemplate();
+
+                }).catch((error) => {
+                    console.error("There was an error: " +error);
+                })
+            },
+            updateExerciseTemplate() {
+                axios.request({
+                    url: `${process.env.VUE_APP_BASE_DOMAIN}/api/exercises`,
                     method: 'POST',
                     headers : {
                         'Content-Type': 'application/json'
@@ -244,9 +276,6 @@ import '../css/currentWorkoutStyle.scss'
     }
     
     .addExerciseBtn {
-    position: fixed;
-    top: 1px;
-    right: 1px;
 	box-shadow:inset 0px 1px 0px 0px #f7c5c0;
 	background:linear-gradient(to bottom, #fc8d83 5%, #e4685d 100%);
 	background-color:#fc8d83;
@@ -260,9 +289,6 @@ import '../css/currentWorkoutStyle.scss'
     }
 
     .finishBtn {
-        top: 1px;
-        right: 15vw;
-        position: fixed;
         box-shadow:inset 0px 1px 0px 0px #f7c5c0;
         background:linear-gradient(to bottom, #329404 5%, #85ddaa 100%);
         background-color:#fc8d83;
@@ -285,10 +311,6 @@ import '../css/currentWorkoutStyle.scss'
         }
     }
     
-    .endWorkoutBtn {
-        top: 1px;
-        right: 35vw;
-    }
     .navbar {
         z-index:5;
         height: 60px;

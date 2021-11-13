@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <h4>{{ exerciseName }}</h4>
-        <p>Reps: {{ reps }} x Sets: {{ sets }} x Weight: {{ weight }}</p>
+        <p>Reps: {{ reps }} x Sets: {{ sets }} x Weight: {{ weight }}lbs</p>
     </div>
 </template>
 

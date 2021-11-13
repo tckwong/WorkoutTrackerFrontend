@@ -29,7 +29,7 @@ section {
 }
 ul {
     display:grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     justify-content: center;
     align-content: center;
     background-color: #282121;
@@ -52,3 +52,28 @@ ul {
             height:100%;
         }
     }
+
+.generalBtn {
+    box-shadow:inset 0px 1px 0px 0px #afa89f;
+    background:linear-gradient(to bottom, #e28445 5%, #e28445 100%);
+    background-color: #e28445;
+    border-radius:25px;
+    border:1px solid #eeb44f;
+    display:inline-block;
+    cursor:pointer;
+    color:#ffffff;
+    font-family:Arial;
+    font-weight:bold;
+    padding:9px 10px;
+    text-decoration:none;
+    text-shadow:0px 1px 0px #cc9f52;
+}
+.generalBtn:hover {
+    background:linear-gradient(to bottom, #fb9e25 5%, #ffc477 100%);
+    background-color:#fb9e25;
+}
+.generalBtn:active {
+    position:relative;
+    top:1px;
+}
+    

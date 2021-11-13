@@ -5,7 +5,7 @@
             <img @click="goBack" src="@/assets/undoIcon.png" alt="back icon">
         </div>
         
-        <WorkoutTemplateChild ref="search" v-for="exercise in allExerciseData" 
+        <WorkoutTemplateChild v-for="exercise in allExerciseData" 
         :key="exercise.exerciseId"
         :exerciseIdP="exercise.exerciseId"
         :exerciseNameP="exercise.exerciseName"
@@ -15,11 +15,13 @@
         :workoutTitleP="exercise.workoutTitle"
         :userIdP="exercise.userId"
         :state="state"
+        :exerciseIndex="addedExerciseIndex"
         @notifyParentDeleteExercise="retrieveExercises"
+        @notifyToRemoveDataOnly="removeExerciseFromDataOnly"
         />
         
-        <button v-b-modal.modal-center @click="addExercise" class="addExerciseBtn">ADD EXERCISE</button>
-        <button @click="checkforSession" class="addExerciseBtn">START WORKOUT</button>
+        <button v-b-modal.modal-center @click="addExercise" class="generalBtn">ADD EXERCISE</button>
+        <button @click="checkforSession" class="generalBtn">START WORKOUT</button>
 
         <b-modal v-model="showModal" title="There is an existing workout session" button-size="lg">
             <p class="my-2">Do you want to resume current workout or start a new workout?</p>
@@ -51,6 +53,7 @@ import WorkoutTemplateChild from '@/components/WorkoutTemplateChild.vue'
                 storeData: [],
                 storeJSON : [],
                 showModal : false,
+                addedExerciseIndex : null,
             }
         },
         computed: {
@@ -109,13 +112,21 @@ import WorkoutTemplateChild from '@/components/WorkoutTemplateChild.vue'
                 })
             },
             addExercise() {
+                this.addedExerciseIndex += 1
                 this.exerciseRow = {
                     exerciseName: 'New Exercise',
                     reps : 1,
                     sets : 1,
                     weight : 1,
+                    addedExerciseIndex : this.addedExerciseIndex //Indicates if this is an added exercise to template
                 }
                 this.allExerciseData.push(this.exerciseRow);
+                console.log(this.allExerciseData);
+            },
+            removeExerciseFromDataOnly(eIndex) {
+                // find the index of object with the object property of eIndex and remove
+                const getIndex = this.allExerciseData.findIndex(x => x.addedExerciseIndex === eIndex);
+                this.allExerciseData.splice(getIndex, 1)
             },
             startWorkoutSession() {
                 axios.request({
@@ -193,36 +204,12 @@ import WorkoutTemplateChild from '@/components/WorkoutTemplateChild.vue'
 
 
 <style lang="scss" scoped>
-    .addExerciseBtn {
-	box-shadow:inset 0px 1px 0px 0px #f7c5c0;
-	background:linear-gradient(to bottom, #fc8d83 5%, #e4685d 100%);
-	background-color:#fc8d83;
-	border-radius:6px;
-	border:1px solid #d83526;
-	display:inline-block;
-	cursor:pointer;
-	color:#ffffff;
-	font-family:Arial;
-	font-size:15px;
-	font-weight:bold;
-	padding:6px 24px;
-    margin-left: 10px;
-	text-decoration:none;
-	text-shadow:0px 1px 0px #b23e35;
-    }
-    .addExerciseBtn:hover {
-        background:linear-gradient(to bottom, #e4685d 5%, #fc8d83 100%);
-        background-color:#e4685d;
-    }
-    .addExerciseBtn:active {
-        position:relative;
-        top:1px;
-    }
 
     .flexContainer {
         display: grid;
         grid-template-columns: 1fr .15fr;
         background-color: #282121;
+        height: 10vh;
         h1 {
             align-self: center;
             padding-left:10px;

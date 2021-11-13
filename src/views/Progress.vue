@@ -1,9 +1,17 @@
 <template>
     <div>
-        <button @click="retrieveExercises()">Randomize</button>
+        <h2>Progression Chart</h2>
         <input v-model="exerciseName">
+        <button @click="retrieveExercises()">Generate</button>
         <line-chart :chartStateUpdate="this.chartState" :chart-data="datacollection" :options="{responsive: true, maintainAspectRatio: false}"></line-chart>
-
+        <div class="bottomNavContainer">
+            <ul>
+                <li><img @click="$router.push({name: 'WorkoutSplit'})" src="@/assets/homeIcon.png"></li>
+                <li><img @click="$router.push({name: 'WorkoutHistory'})" src="@/assets/historyIcon.png"></li>
+                <li><img @click="$router.push({name: 'Progress'})" src="@/assets/progression.png"></li>
+                <li><img @click="logOutUser" src="@/assets/logoutIcon.png"></li>
+            </ul>
+        </div>
     </div>
 </template>
 
@@ -51,7 +59,6 @@ export default {
                     this.datacollection.labels[i] = response.data[i].weight;
                     this.datacollection.datasets[0].data[i] = response.data[i].weight
                 }
-                console.log(this.datacollection);
                 this.chartState = !this.chartState;
     
                 
@@ -59,6 +66,24 @@ export default {
                 console.error("There was an error: " +error);
             })
         },
+        logOutUser() {
+                axios.request({
+                    url: `${process.env.VUE_APP_BASE_DOMAIN}/api/login`,
+                    method: 'DELETE',
+                    headers : {
+                        'X-Api-Key' : process.env.VUE_APP_API_KEY,
+                    },
+                    data : {
+                        "loginToken" : this.userToken,
+                    }
+
+                }).then(() => {
+                    cookies.remove('loginData');
+                    this.$router.push({ name: 'Login' });
+                }).catch((error) => {
+                    console.error("There was an error: " +error);
+                })
+            },
         getMyCookies() {
                 const getCookie = cookies.get('loginData');
                 this.userToken = getCookie.loginToken;
@@ -72,3 +97,10 @@ export default {
 
 }
 </script>
+
+<style lang="scss" scoped>
+    h2 {
+        text-align: center;
+    }
+
+</style>

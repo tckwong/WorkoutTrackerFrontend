@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Login from '../views/Login.vue'
-import DashboardView from '../views/DashboardView.vue'
 import WorkoutSplit from '../views/WorkoutSplit.vue'
 import UserLogin from '../views/LoginViews/UserLogin.vue'
 import UserRegistration from '../views/LoginViews/UserRegistration.vue'
@@ -17,11 +16,6 @@ const routes = [
     path: '/Login',
     name: 'Login',
     component: Login
-  },
-  {
-    path: '/DashboardView',
-    name: 'DashboardView',
-    component: DashboardView
   },
   {
     path: '/',

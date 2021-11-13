@@ -8,6 +8,7 @@ export default new Vuex.Store({
     items: [],
     currWorkoutData: [],
     workoutSessionStartTime: null,
+    currentState: false
   },
 
   mutations: {
@@ -19,6 +20,9 @@ export default new Vuex.Store({
     },
     addNewStartTime: (state, data) => {
       state.workoutSessionStartTime = data
+    },
+    updateState:(state, data) => {
+      state.currentState = data
     }
 
   },

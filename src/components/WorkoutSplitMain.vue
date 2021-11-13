@@ -40,6 +40,7 @@
                     </b-modal>
                     </li>
                     <li><img @click="$router.push({name: 'WorkoutHistory'})" src="@/assets/historyIcon.png"></li>
+                    <li><img @click="$router.push({name: 'Progress'})" src="@/assets/progression.png"></li>
                     <li><img @click="logOutUser" src="@/assets/logoutIcon.png"></li>
                 </ul>
             </div>
