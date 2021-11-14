@@ -15,11 +15,20 @@
         :workoutTitleP="exercise.workoutTitle"
         :userIdP="exercise.userId"
         :state="state"
-        :exerciseIndex="addedExerciseIndex"
         @notifyParentDeleteExercise="retrieveExercises"
-        @notifyToRemoveDataOnly="removeExerciseFromDataOnly"
         />
-        
+        <WorkoutTemplateChildNewData v-for="exercise in allNewExerciseData" 
+        :key="exercise.exerciseIndex"
+        :exerciseIndex="exercise.exerciseIndex"
+        :exerciseNameP="exercise.exerciseName"
+        :repsP="exercise.reps"
+        :setsP="exercise.sets"
+        :weightP="exercise.weight"
+        :workoutTitleP="exercise.workoutTitle"
+        :userIdP="exercise.userId"
+        :stateNew="stateNew"
+        @notifyToRemoveDataOnly="removeExerciseNew"
+        />
         <button v-b-modal.modal-center @click="addExercise" class="generalBtn">ADD EXERCISE</button>
         <button @click="checkforSession" class="generalBtn">START WORKOUT</button>
 
@@ -35,25 +44,29 @@
 import axios from 'axios'
 import cookies from 'vue-cookies'
 import WorkoutTemplateChild from '@/components/WorkoutTemplateChild.vue'
+import WorkoutTemplateChildNewData from '@/components/WorkoutTemplateChildNewData.vue'
 
     export default {
         name: 'WorkoutTemplate',
         components: {
-            WorkoutTemplateChild
+            WorkoutTemplateChild,
+            WorkoutTemplateChildNewData
         },
         data: () => {
             return {
                 workoutTitle: null,
                 allExerciseData : [],
+                allNewExerciseData :[],
                 exerciseRow : {},
                 workoutId : null,
                 state : false,
+                stateNew : false,
                 userToken : null,
                 userId : null,
                 storeData: [],
                 storeJSON : [],
                 showModal : false,
-                addedExerciseIndex : null,
+                addedExerciseIndex : 0,
             }
         },
         computed: {
@@ -62,6 +75,16 @@ import WorkoutTemplateChild from '@/components/WorkoutTemplateChild.vue'
             }
         },
         methods: {
+            removeExerciseNew(index) {
+            // find the index of object with the object property of index and remove
+
+            for( var i = 0; i < this.allNewExerciseData.length; i++){ 
+
+                if (this.allNewExerciseData[i].exerciseIndex === index) { 
+                    this.allNewExerciseData.splice(i, 1); 
+                }
+            }
+            },
             resumeWorkout() {
                 this.$router.push({ name: 'CurrentWorkout' })
             },
@@ -112,22 +135,17 @@ import WorkoutTemplateChild from '@/components/WorkoutTemplateChild.vue'
                 })
             },
             addExercise() {
-                this.addedExerciseIndex += 1
                 this.exerciseRow = {
+                    exerciseIndex : this.addedExerciseIndex,
                     exerciseName: 'New Exercise',
                     reps : 1,
                     sets : 1,
                     weight : 1,
-                    addedExerciseIndex : this.addedExerciseIndex //Indicates if this is an added exercise to template
                 }
-                this.allExerciseData.push(this.exerciseRow);
-                console.log(this.allExerciseData);
+                this.allNewExerciseData.push(this.exerciseRow);
+                this.addedExerciseIndex += 1;
             },
-            removeExerciseFromDataOnly(eIndex) {
-                // find the index of object with the object property of eIndex and remove
-                const getIndex = this.allExerciseData.findIndex(x => x.addedExerciseIndex === eIndex);
-                this.allExerciseData.splice(getIndex, 1)
-            },
+
             startWorkoutSession() {
                 axios.request({
                         url: `${process.env.VUE_APP_BASE_DOMAIN}/api/workout-session`,
@@ -143,6 +161,7 @@ import WorkoutTemplateChild from '@/components/WorkoutTemplateChild.vue'
                 }).then(() => {
                     // State change alerts child to add its existing data to vue Store
                     this.state = !this.state;
+                    this.stateNew = !this.stateNew;
                     this.currentTime = new Date();
                     var curTime = Date.parse(this.currentTime);
                     localStorage.setItem("sessionStartTime", curTime);
