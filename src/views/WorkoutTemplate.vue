@@ -1,11 +1,13 @@
 <template>
     <div>
         <div class="flexContainer">
-            <h1>{{ workoutTitle }}</h1><button :disabled="isDisabled" @click="checkforSession" id="startBtn" class="generalBtn">START WORKOUT</button>
+            <h1>{{ workoutTitle }}</h1>
+            <button :disabled="isDisabled" @click="saveChangeState" id="saveBtn" class="generalBtn">SAVE</button>
+            <button :disabled="isDisabled" @click="checkforSession" id="startBtn" class="generalBtn">START WORKOUT</button>
             <img id="backBtn" @click="goBack" src="@/assets/undoIcon.png" alt="back icon">
         </div>
         
-        <WorkoutTemplateChild v-for="exercise in allExerciseData" 
+        <WorkoutTemplateChild ref="handleChange" v-for="exercise in allExerciseData"
         :key="exercise.exerciseId"
         :exerciseIdP="exercise.exerciseId"
         :exerciseNameP="exercise.exerciseName"
@@ -24,6 +26,7 @@
         :repsP="exercise.reps"
         :setsP="exercise.sets"
         :weightP="exercise.weight"
+        :stateSaved="stateSaved"
         :workoutTitleP="exercise.workoutTitle"
         :userIdP="exercise.userId"
         :stateNew="stateNew"
@@ -62,6 +65,7 @@ import WorkoutTemplateChildNewData from '@/components/WorkoutTemplateChildNewDat
                 workoutId : null,
                 state : false,
                 stateNew : false,
+                stateSaved : false,
                 userToken : null,
                 userId : null,
                 storeData: [],
@@ -74,11 +78,12 @@ import WorkoutTemplateChildNewData from '@/components/WorkoutTemplateChildNewDat
             getExerciseData: function() {
                 return this.$store.state.items
             },
-        
-            isDisabled() {
-                return this.allNewExerciseData.length === 0 && this.allExerciseData.length === 0;
+            getExerciseDataSaved: function() {
+                return this.$store.state.itemsSaved
             },
-
+            isDisabled() {
+                return (this.allNewExerciseData.length === 0 && this.allExerciseData.length === 0) || this.$refs.handleChange===true;
+            },
         },
         methods: {
             removeExerciseNew(index) {
@@ -93,6 +98,26 @@ import WorkoutTemplateChildNewData from '@/components/WorkoutTemplateChildNewDat
             },
             resumeWorkout() {
                 this.$router.push({ name: 'CurrentWorkout' })
+            },
+            saveChangeState() {
+                this.stateSaved = !this.stateSaved;
+                setTimeout(this.saveTemplate, 200);
+                
+            },
+            saveTemplate() {
+                axios.request({
+                    url: `${process.env.VUE_APP_BASE_DOMAIN}/api/exercises`,
+                    method: 'POST',
+                    headers : {
+                        'Content-Type': 'application/json'
+                    },
+                    data : JSON.stringify(this.$store.state.itemsSaved)
+                    
+                }).then(() => {
+                    
+                }).catch((error) => {
+                    console.error("There was an error: " +error);
+                })
             },
             // Only run if existing workout is active
             startNewWorkout() {
@@ -152,7 +177,6 @@ import WorkoutTemplateChildNewData from '@/components/WorkoutTemplateChildNewDat
                 this.allNewExerciseData.push(this.exerciseRow);
                 this.addedExerciseIndex += 1;
             },
-
             startWorkoutSession() {
                 axios.request({
                         url: `${process.env.VUE_APP_BASE_DOMAIN}/api/workout-session`,
@@ -233,12 +257,12 @@ import WorkoutTemplateChildNewData from '@/components/WorkoutTemplateChildNewDat
 
     .flexContainer {
         display: grid;
-        grid-template-columns: 1fr 1fr .4fr;
+        grid-template-columns: .4fr .6fr 1fr .4fr;
         background-color: #282121;
         height: 10vh;
         h1 {
             align-self: center;
-            padding-left:10px;
+            text-align: center;
         }
         img {
         height: 50px;
@@ -256,6 +280,12 @@ import WorkoutTemplateChildNewData from '@/components/WorkoutTemplateChildNewDat
         }
     }
     #startBtn {
+        width: 70%;
+        height: 80%;
+        align-self: center;
+        justify-self: center;
+    }
+    #saveBtn {
         width: 70%;
         height: 80%;
         align-self: center;

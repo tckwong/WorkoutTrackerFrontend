@@ -6,8 +6,11 @@
             header-bg-variant="dark"
             style="max-width: 100vw;"
         >
-        <b-col sm="3">
-            <b-card-title><b-form-input type="text" @input="handleChange = true" v-model="storeInfo.exerciseName"></b-form-input></b-card-title><button @click="updateExerciseName" v-if="handleChange">Save</button>
+        <b-col sm="5">
+            <b-row>
+                <b-col sm="10" md="12" fluid ><b-card-title><b-form-input type="text" @input="handleChange = true" v-model="storeInfo.exerciseName"></b-form-input></b-card-title></b-col>
+                <b-col md="12" fluid><button @click="updateExerciseName" v-if="handleChange" class="generalBtn">Save Changes</button></b-col>
+            </b-row>
         </b-col>
         <div class="grid-container">
             <p>Reps:</p>
@@ -15,13 +18,13 @@
             <p>Weight:</p>
             <b-button @click="deleteExercise">X</b-button>
             <b-col class="inputBoxWidth" sm="2">
-                <b-form-input v-model="storeInfo.reps" placeholder="0"></b-form-input>
+                <b-form-input @input="handleChange = true" v-model="storeInfo.reps" placeholder="0"></b-form-input>
             </b-col>
             <b-col class="inputBoxWidth" sm="2">
-                <b-form-input v-model="storeInfo.sets" placeholder="0"></b-form-input>
+                <b-form-input @input="handleChange = true" v-model="storeInfo.sets" placeholder="0"></b-form-input>
             </b-col>
             <b-col class="inputBoxWidth" sm="2">
-                <b-form-input v-model="storeInfo.weight" placeholder="0"></b-form-input>
+                <b-form-input @input="handleChange = true" v-model="storeInfo.weight" placeholder="0"></b-form-input>
             </b-col>
         </div>
         </b-card>
@@ -42,6 +45,7 @@ import cookies from 'vue-cookies'
             weightP : Number,
             userIdP : Number,
             state : Boolean,
+
         },
         data: () => {
             return {
@@ -49,6 +53,7 @@ import cookies from 'vue-cookies'
                 exerciseRow : {},
                 workoutId : null,
                 userToken : null,
+                userId : null,
                 handleChange : false,
 
                 storeInfo : {
@@ -71,8 +76,15 @@ import cookies from 'vue-cookies'
                         'Content-Type': 'application/json'
                     },
                     data: {
-                        "oldExerciseName" : this.exerciseNameP,
-                        "exerciseName" : this.storeInfo.exerciseName,
+                        "exerciseId" : this.exerciseIdP,
+                        "userId" : this.userId,
+                        "workoutId" : this.$route.params.workout,
+                        "reps" : this.storeInfo.reps,
+                        "sets" : this.storeInfo.sets,
+                        "weight": this.storeInfo.weight,
+                        "oldExerciseName": this.exerciseNameP,
+                        "newExerciseName": this.storeInfo.exerciseName
+
                     }
                     }).then(() => {
                         this.handleChange = false
@@ -105,6 +117,7 @@ import cookies from 'vue-cookies'
                 // Updates store with 'storeInfo'. All data updated via v-model
                 this.$store.dispatch('loadItems',this.storeInfo)
             },
+            
             initialData() {
                 this.storeInfo = {
                     workoutId : this.$route.params.workout,
@@ -118,6 +131,7 @@ import cookies from 'vue-cookies'
             getMyCookies() {
                 var getCookie = cookies.get('loginData');
                 this.userToken = getCookie.loginToken;
+                this.userId = getCookie.userId;
                 
             },
         },
@@ -128,7 +142,7 @@ import cookies from 'vue-cookies'
         watch: {
             state() {
                 this.addDataToStore();
-            }
+            },
         }
     }
 </script>
@@ -144,6 +158,9 @@ import cookies from 'vue-cookies'
     }
     #checkbox-1 {
         width: 30px;
+    }
+    .generalBtn {
+        padding: 0 40px;
     }
     
 </style>

@@ -52,6 +52,7 @@ import WorkoutHistoryChild from '@/components/WorkoutHistoryChild.vue'
                         "userId" : this.userId,
                     }
                 }).then((response) => {
+                    
                     for (const [index] of response.data.entries()) {
                         this.workoutObj = {
                             workoutTitle : response.data[index].workoutTitle[index],
@@ -63,6 +64,7 @@ import WorkoutHistoryChild from '@/components/WorkoutHistoryChild.vue'
                         }
                         this.completedWorkoutData.push(this.workoutObj);
                     }
+                    console.log(this.completedWorkoutData);
 
                 }).catch((error) => {
                     console.error("There was an error: " +error);

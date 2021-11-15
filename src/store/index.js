@@ -6,6 +6,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     items: [],
+    itemsSaved: [],
     currWorkoutData: [],
     workoutSessionStartTime: null,
     currentState: false
@@ -14,6 +15,9 @@ export default new Vuex.Store({
   mutations: {
     updateExerciseData: (state, data) => {
       state.items.push(data)
+    },
+    updateExerciseDataSaved: (state, data) => {
+      state.itemsSaved.push(data)
     },
     updateCurrWorkoutData: (state, data) => {
       state.currWorkoutData.push(data)
@@ -31,6 +35,9 @@ export default new Vuex.Store({
     // Called from WorkoutTempalteChild.vue
     loadItems: (context, data) => {
       context.commit('updateExerciseData', data);
+    },
+    loadItemsSaved: (context, data) => {
+      context.commit('updateExerciseDataSaved', data);
     },
     loadCurrItems: (context, data) => {
       context.commit('updateCurrWorkoutData', data);

@@ -27,11 +27,6 @@
 
         <div class="bottomNavContainer">
                 <ul>
-                    <li><img v-b-modal.modal-center @click="showModal" src="@/assets/plusIcon.png">
-                        <b-modal ref="my-modal" id="modal-center" centered title="Name The Exercise" @ok="addExercise">
-                        <input v-model="newExerciseName" type="text">
-                    </b-modal>
-                    </li>
                     <li><button @click="abortWorkout" class="abortBtn">ABORT WORKOUT</button></li>
                     <li><button @click="changeState" class="finishBtn">FINISH WORKOUT</button></li>
                 </ul>

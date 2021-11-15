@@ -13,15 +13,12 @@
               sm="auto">
               <b-form-input
                 id="input1"
+                @keydown.space.prevent
                 v-model="email"
                 type="email"
-                :state="nameState"
                 placeholder="Enter email"
                 required
               ></b-form-input>
-              <b-form-invalid-feedback id="input-live-feedback">
-                Enter at least 3 letters
-              </b-form-invalid-feedback>
             </b-col>
           </b-form-group>
     
@@ -29,21 +26,27 @@
           <b-form-input
             id="input2"
             v-model="username"
+            @keydown.space.prevent
             placeholder="Enter username"
+            :state="nameStateUsrNme"
             required
           ></b-form-input>
+          <b-form-invalid-feedback>Username must be between 4 and 14 characters long</b-form-invalid-feedback>
         </b-form-group>
 
         <b-form-group id="inputGroup" label="Password:" label-for="input-2">
           <b-form-input
             id="input3"
             v-model="password"
+            @keydown.space.prevent
             type="password"
             placeholder="Enter password"
+            :state="pwState"
             required
           ></b-form-input>
+          <b-form-invalid-feedback>Password must be between 4 and 12 characters long</b-form-invalid-feedback>
         </b-form-group>
-        <div id="buttonContainer">
+        <div>
           <b-button class="buttons" @click="registerUser" type="submit" variant="primary">Submit</b-button>
           <b-button @click="gobacktoLogin" class="buttons" variant="danger">Go Back</b-button>
         </div>
@@ -68,9 +71,12 @@ export default {
             }
     },
     computed: {
-      nameState() {
-        return this.email.length > 2 ? true : false
-      }
+      nameStateUsrNme() {
+        return this.username.length > 4 && this.username.length < 15 ? true : false
+      },
+      pwState() {
+        return this.password.length > 4 && this.password.length < 13 ? true : false
+      },
     },
     methods: {
         registerUser() {

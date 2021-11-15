@@ -180,4 +180,19 @@ import cookies from 'vue-cookies'
     b-dropdown {
         background: theme-color('danger');
     }
+
+    @media only screen and (min-width:600px) {
+        #workout-container {
+        display: grid;
+        grid-template-columns: 1fr .05fr;
+        border-bottom: 1px solid rgb(226, 111, 34);
+        border-left: 1px solid rgb(226, 111, 34);
+        margin-left: 15vw;
+        margin-right: 15vw;
+        }
+        .routerLink {
+            padding: 5px 0;
+        }
+    
+    }
 </style>

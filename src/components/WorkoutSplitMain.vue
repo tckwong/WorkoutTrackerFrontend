@@ -33,7 +33,6 @@
             </aside>
         </section>
 
-
         <!-- Adding a bottom nav -->
         <div class="bottomNavContainer">
             <ul>
@@ -85,6 +84,7 @@ import WorkoutSplitChild from './WorkoutSplitChild.vue'
             }
         },
         methods: {
+            // Modal popup for adding workout
             showModal() {
                 this.$refs['my-modal'].show()
             },
@@ -137,7 +137,7 @@ import WorkoutSplitChild from './WorkoutSplitChild.vue'
                         userId : response.data.userId,
                         }
                     this.allWorkoutData.push(this.newWorkoutObj);
-
+                    this.newWorkoutTitle = "";
                 }).catch((error) => {
                     console.error("There was an error: " +error);
                 })
@@ -234,8 +234,9 @@ import WorkoutSplitChild from './WorkoutSplitChild.vue'
 </script>
 
 <style lang="scss" scoped>
+
     .template-container {
-        margin-bottom:10vh;
+        margin-bottom:15vh;
     }
 
     .activeWorkoutContainer {
@@ -261,7 +262,6 @@ import WorkoutSplitChild from './WorkoutSplitChild.vue'
         text-align: center;
         padding: 10px 0;
     }
-
 
     img {
         max-width: 100%;
@@ -439,5 +439,22 @@ import WorkoutSplitChild from './WorkoutSplitChild.vue'
             transform: translatex(0);
         }
     }
+}
+
+@media only screen and (min-width:600px) {
+    .bottomNavContainer {
+        img {
+            cursor:pointer;
+            height:85%;
+            
+        }
+        ul {
+            li {
+            margin-top: 0px;
+            }
+        }
+    }
+
+
 }
 </style>

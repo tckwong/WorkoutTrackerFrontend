@@ -53,7 +53,8 @@ import '../css/general.scss'
         #logo {
         justify-self: center;
         align-self: center;
-        width:90%
+        width:90%;
+        margin-top: 10vh;
         }
     }
     .loginButton {

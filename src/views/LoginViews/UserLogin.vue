@@ -18,8 +18,7 @@
                 placeholder="password"
                 ></b-form-input>
                 <b-form-text id="password-help-block">
-                Your password must be 8-20 characters long, contain letters and numbers, and must not
-                contain spaces, special characters, or emoji.
+                <p id="errorMsg" :class="{ activatedErrorMsg: errMsgActive }">Invalid username/ password combination.</p>
                 </b-form-text>
 
                 <b-form-checkbox 
@@ -29,7 +28,7 @@
                     unchecked-value="not_checked"
                     
                     >Remember me</b-form-checkbox>
-                <button class="generalBtn" @click="loginUser">Log In</button>
+                <b-button id="loginBtn" @click="loginUser" variant="primary">Log In</b-button>
             </b-form>
         </div>
         
@@ -47,7 +46,8 @@ export default {
             return {
                 password: null,
                 email: null,
-                status: 'not_checked'
+                status: 'not_checked',
+                errMsgActive : true
             }
     },
     methods: {
@@ -64,8 +64,6 @@ export default {
                 }
 
             }).then((response) => {
-                console.log(response);
-                console.log("working?");
                 if (this.status === 'not_checked') {
                     cookies.set('loginData', response.data, 0);
                 }else {
@@ -74,6 +72,7 @@ export default {
                 this.$router.push({ name: 'WorkoutSplit' });
                 
             }).catch((error) => {
+                this.errMsgActive = false;
                 console.error("There was an error with your api request: " + error);
             })
         },
@@ -81,40 +80,53 @@ export default {
 }   
 </script>
 <style lang="scss" scoped>
-
+    
     section > div {
         height: 100vh;
-        }
-        .formContainer {
+    }
+    .formContainer {
         padding-left: 10vw;
-            padding-right:10vw;
-        }
-        .heading {
-        text-align: center;
-        padding-top: 10vh;
-        padding-bottom:5vh;
-        }
-        .buttons {
-        float: right;
-        margin-top: 20px;
-        }
+        padding-right:10vw;
+    }
+    .heading {
+    text-align: center;
+    padding-top: 10vh;
+    padding-bottom:5vh;
+    }
+    .buttons {
+    float: right;
+    margin-top: 20px;
+    }
 
     .buttons:nth-child(2) {
     margin-right: 10px;
     }
-    .generalBtn{
-        margin-top: 10px;
+    .activatedErrorMsg {
+        display: none;
+        
     }
+    #errorMsg {
+        color: red;
+    }
+    
+    #loginBtn {
+        background-color: #e28445;
+        margin-top: 10px;
+        border: 1px solid white;
+        padding: 10px 20px;
+    }
+
     @media only screen and (min-width:700px) {
     .formContainer {
         padding-left: 20vw;
         padding-right:20vw;
     }
-  }
-  @media only screen and (min-width:1000px) {
+    }
+    @media only screen and (min-width:1000px) {
     .formContainer {
-      padding-left: 30vw;
-      padding-right:30vw;
-  }
-  }
+        padding-left: 30vw;
+        padding-right:30vw;
+    }
+    }
+
 </style>

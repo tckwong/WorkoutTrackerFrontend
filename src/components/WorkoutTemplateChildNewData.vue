@@ -42,6 +42,7 @@ import cookies from 'vue-cookies'
             weightP : Number,
             userIdP : Number,
             stateNew : Boolean,
+            stateSaved : Boolean,
         },
         data: () => {
             return {
@@ -79,6 +80,10 @@ import cookies from 'vue-cookies'
                     weight: this.weightP
                 }
             },
+            addDataToStoreSaved() {
+                // Load saved items to store
+                this.$store.dispatch('loadItemsSaved', this.storeInfo)
+            },
             getMyCookies() {
                 var getCookie = cookies.get('loginData');
                 this.userToken = getCookie.loginToken;
@@ -90,6 +95,9 @@ import cookies from 'vue-cookies'
             this.initialData();
         },
         watch: {
+            stateSaved() {
+                this.addDataToStoreSaved();
+            },
             stateNew() {
                 this.addDataToStore();
             }
