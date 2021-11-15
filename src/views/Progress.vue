@@ -1,14 +1,18 @@
 <template>
     <div>
-        <h2>Progression Chart</h2>
-        <input v-model="exerciseName">
-        <button @click="retrieveExercises()">Generate</button>
+        <div class="heading-1">
+            <h2>Progression Chart</h2>
+            <p>Search up your exercises to see your progression by weight over time.</p>
+            <input v-model="exerciseName">
+            <button class="generalBtn" @click="retrieveExercises()">Generate</button>
+        </div>
+        <!-- Send datacollection to chart compoonent for renderings -->
         <line-chart :chartStateUpdate="this.chartState" :chart-data="datacollection" :options="{responsive: true, maintainAspectRatio: false}"></line-chart>
         <div class="bottomNavContainer">
             <ul>
                 <li><img @click="$router.push({name: 'WorkoutSplit'})" src="@/assets/homeIcon.png"></li>
                 <li><img @click="$router.push({name: 'WorkoutHistory'})" src="@/assets/historyIcon.png"></li>
-                <li><img @click="$router.push({name: 'Progress'})" src="@/assets/progression.png"></li>
+                <li id="activePage"><img @click="$router.push({name: 'Progress'})" src="@/assets/progression.png"></li>
                 <li><img @click="logOutUser" src="@/assets/logoutIcon.png"></li>
             </ul>
         </div>
@@ -21,7 +25,7 @@ import axios from 'axios'
 import cookies from 'vue-cookies'
 
 export default {
-    name: 'PlanetChart',
+    name: 'Progress',
     components: {
         LineChart
     },
@@ -34,8 +38,13 @@ export default {
                 labels: [],
                 datasets:[
                     {
-                        label: 'Weight',
-                        backgroundColor: '#f87979',
+                        label: 'Weight(lbs)',
+                        backgroundColor: '#f58840',
+                        data: []
+                    },
+                    {
+                        label: 'Date',
+                        backgroundColor: '#f58840',
                         data: []
                     }
                 ]
@@ -52,12 +61,20 @@ export default {
                     "userId" : this.userId,
                 }
             }).then((response) => {
+                // Make Datetime more readable by omitting time
                 this.datacollection.labels = [];
                 this.datacollection.datasets[0].data=[];
+                this.datacollection.datasets[1].data=[];
 
                 for (let i=0; i<response.data.length; i++){
-                    this.datacollection.labels[i] = response.data[i].weight;
-                    this.datacollection.datasets[0].data[i] = response.data[i].weight
+                    let splitDate = response.data[i].completedAt.split(" ");
+
+                    let newDate = splitDate[0];
+                    // x-axis label
+                    this.datacollection.labels[i] = newDate;
+                    // 2 data array variables: weight and date
+                    this.datacollection.datasets[0].data[i] = response.data[i].weight;
+                    this.datacollection.datasets[1].data[i] = newDate;
                 }
                 this.chartState = !this.chartState;
     
@@ -99,8 +116,18 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-    h2 {
+    .heading-1 {
         text-align: center;
+        
+        h2 {
+        text-align: center;
+        margin: 2vh 0;
+        
+        input, button {
+            padding-bottom:10px;
+        }
     }
+    }
+  
 
 </style>

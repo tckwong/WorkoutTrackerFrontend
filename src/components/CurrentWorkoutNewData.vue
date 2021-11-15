@@ -7,6 +7,7 @@
             style="max-width: 100vw;"
         >
         <b-col sm="3">
+            {{ exerciseIndex }}
             <b-card-title><b-form-input type="text" v-model="storeInfo.exerciseName"></b-form-input></b-card-title>
         </b-col>
         <div class="grid-container">
@@ -33,7 +34,7 @@
 import cookies from 'vue-cookies'
 
     export default {
-        name: 'WorkoutTemplateChildNewData',
+        name: 'CurrentWorkoutNewData',
         props: {
             exerciseIndex : Number,
             exerciseNameP : String,

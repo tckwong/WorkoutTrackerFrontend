@@ -66,12 +66,7 @@ import WorkoutHistoryExList from '@/components/WorkoutHistoryExList.vue'
                     
                 return this.exerciseList
             },
-            // getKeyByValue(arr, value) {
-            //     for (var j=0; j<arr.length; j++){
-            //         console.log(j)
-            //         return Object.keys(j).find(key => j[key] === value);
-            //     }
-            // },
+            
             getMonths() {
                 const myMonths = [
                 {1 : "January"},

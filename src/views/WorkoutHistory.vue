@@ -18,7 +18,7 @@
         <div class="bottomNavContainer">
                 <ul>
                     <li><img @click="$router.push({name: 'WorkoutSplit'})" src="@/assets/homeIcon.png"></li>
-                    <li><img @click="$router.push({name: 'WorkoutHistory'})" src="@/assets/historyIcon.png"></li>
+                    <li id="activePage"><img @click="$router.push({name: 'WorkoutHistory'})" src="@/assets/historyIcon.png"></li>
                     <li><img @click="$router.push({name: 'Progress'})" src="@/assets/progression.png"></li>
                     <li><img src="@/assets/logoutIcon.png"></li>
                 </ul>
@@ -82,9 +82,13 @@ import WorkoutHistoryChild from '@/components/WorkoutHistoryChild.vue'
 </script>
 
 <style lang="scss" scoped>
+    section {
+        margin-bottom:5vh;
+    }
     h1 {
         color: #e06a1c;
         padding:4vh 0;
         text-align:center;
     }
+
 </style>

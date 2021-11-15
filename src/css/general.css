@@ -7,14 +7,116 @@
 }
 
 section {
+  margin-left: auto;
+  margin-right: auto;
   background: linear-gradient(to bottom, #282121, #3f3939 50%);
 }
 
+.bottomNavContainer {
+  position: fixed;
+  width: 100vw;
+  height: 10vh;
+  position: fixed;
+  bottom: 0;
+  background-color: #282121;
+  border: 1px solid #e28445;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+}
+
+ul {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  justify-content: start;
+  align-content: center;
+}
+
+li {
+  display: inline;
+  justify-self: start;
+  list-style-type: none;
+  height: 100%;
+  margin-top: 12px;
+}
+
+li img {
+  width: 10vw;
+  cursor: pointer;
+  height: 100%;
+}
+
+li img:hover {
+  transform: scale(1.2);
+}
+
+#activePage {
+  pointer-events: none;
+  transform: scale(1.2);
+}
+
+.generalBtn {
+  box-shadow: inset 0px 1px 0px 0px #afa89f;
+  background: linear-gradient(to bottom, #e28445 5%, #e28445 100%);
+  background-color: #e28445;
+  border-radius: 25px;
+  border: 1px solid #eeb44f;
+  display: inline-block;
+  color: #ffffff;
+  font-family: Arial;
+  font-weight: bold;
+  padding: 9px 10px;
+  text-decoration: none;
+  text-shadow: 0px 1px 0px #cc9f52;
+  border-radius: 20px;
+}
+
+.generalBtn:hover {
+  background: linear-gradient(to bottom, #fb9e25 5%, #ffc477 100%);
+  background-color: #fb9e25;
+  border-radius: 20px;
+}
+
+.generalBtn:active {
+  position: relative;
+  top: 1px;
+  border-radius: 20px;
+}
+
 @media only screen and (min-width: 700px) {
-  section {
+  .bottomNavContainer img {
+    cursor: pointer;
+    height: 80%;
+  }
+  .bottomNavContainer ul li {
+    margin-top: 6px;
+  }
+}
+
+@media only screen and (min-width: 1000px) {
+  .bottomNavContainer {
+    position: fixed;
+    width: 70vw;
+    height: 100px;
+    position: fixed;
+    bottom: 0;
+    left: 14%;
+    background-color: #282121;
     margin-left: auto;
     margin-right: auto;
-    background-color: #282121;
+  }
+  ul li {
+    display: inline;
+    justify-self: center;
+    list-style-type: none;
+    height: 100px;
+  }
+  ul li img {
+    width: 100px;
+    cursor: pointer;
+    height: 90px;
+  }
+  li:hover {
+    background-color: #e28445;
   }
 }
 /*# sourceMappingURL=general.css.map */

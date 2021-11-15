@@ -1,5 +1,8 @@
 <template>
-    <div>
+    <div id="currWorkoutContainer">
+        <div class="header">
+            <img @click="$router.push({name: 'WorkoutSplit'})" src="@/assets/homeIcon.png">
+        </div>
         <CurrentWorkoutChild v-for="(exercise, index) in allExerciseData" 
         :key="exercise.exerciseId"
         :index="index"
@@ -12,13 +15,16 @@
         :userIdP="exercise.userId"
         :collapsedVisible="exercise.collapsedVisible"
         :stateCurrent="exercise.stateCurrent"
+        :length="allExerciseData.length"
         @notifyParentDeleteExercise="retrieveExercises"
         @notifyChangeFocusNext="changeFocusNext"
+        @notifyChangeFocusPrev="changeFocusPrev"
         />
         <!-- Workout Timer -->
-        <div>
-            <h2>{{ hours }}:{{minutes}}:{{ seconds }}</h2>
+        <div id="timer">
+            <h1>{{ hours }}:{{minutes}}:{{ seconds }}</h1>
         </div>
+
         <div class="bottomNavContainer">
                 <ul>
                     <li><img v-b-modal.modal-center @click="showModal" src="@/assets/plusIcon.png">
@@ -26,8 +32,8 @@
                         <input v-model="newExerciseName" type="text">
                     </b-modal>
                     </li>
-                    <li><button v-scroll-reveal.reset="{ delay: 250 }" @click="abortWorkout" class="addExerciseBtn endWorkoutBtn">ABORT WORKOUT</button></li>
-                    <li><button v-scroll-reveal.reset="{ delay: 250 }" @click="changeState" class="finishBtn">FINISH WORKOUT</button></li>
+                    <li><button @click="abortWorkout" class="abortBtn">ABORT WORKOUT</button></li>
+                    <li><button @click="changeState" class="finishBtn">FINISH WORKOUT</button></li>
                 </ul>
         </div>
         
@@ -38,8 +44,6 @@
 import axios from 'axios'
 import cookies from 'vue-cookies'
 import CurrentWorkoutChild from '@/components/CurrentWorkoutChild.vue'
-import '../css/currentWorkoutStyle.scss'
-// import moment from 'moment'
 
     export default {
         name: 'WorkoutTemplate',
@@ -59,6 +63,9 @@ import '../css/currentWorkoutStyle.scss'
                 showNavbar: true,
                 lastScrollPosition: 0,
                 newExerciseName: null,
+                // Variables for added exercises
+                addedExerciseIndex : 0,
+                allNewExerciseData : [],
                 // timer variables
                 startTime: "00:00:00",
                 end: null,
@@ -86,23 +93,9 @@ import '../css/currentWorkoutStyle.scss'
                 this.allExerciseData[childIndex].collapsedVisible = false;
                 this.allExerciseData[childIndex+1].collapsedVisible = true;
             },
-            onScroll () {
-                // Get the current scroll position
-                const currentScrollPosition = window.pageYOffset || document.documentElement.scrollTop
-                // Because of momentum scrolling on mobiles, we shouldn't continue if it is less than zero
-                if (currentScrollPosition < 0) {
-                return
-                }
-                this.showNavbar = currentScrollPosition < this.lastScrollPosition
-                // Set the current scroll position as the last scroll position
-                this.lastScrollPosition = currentScrollPosition
-            },
-            handleScroll () {
-                if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-                document.getElementById("navbar").style.top = "0";
-                } else {
-                document.getElementById("navbar").style.top = "-150px";
-                }
+            changeFocusPrev(childIndex) {
+                this.allExerciseData[childIndex].collapsedVisible = false;
+                this.allExerciseData[childIndex-1].collapsedVisible = true;
             },
             retrieveExercises() {
                 axios.request({
@@ -126,17 +119,31 @@ import '../css/currentWorkoutStyle.scss'
                     console.error("There was an error: " +error);
                 })
             },
-            addExercise() {
-                this.exerciseRow = {
-                    exerciseName: this.newExerciseName,
-                    reps : 1,
-                    sets : 1,
-                    weight : 1,
-                    userId : this.userId,
+            // addExercise() {
+            //     axios.request({
+            //         url: `${process.env.VUE_APP_BASE_DOMAIN}/api/exercises`,
+            //         method: 'POST',
+            //         data : {
+            //             "loginToken" : this.userToken,
+            //             "workoutId" : this.$route.params.workout,
 
-                }
-                this.allExerciseData.push(this.exerciseRow);
-            },
+            //         }
+            //     }).then((response) => {
+                    
+            //         this.exerciseRow = {
+            //         exerciseIndex : this.addedExerciseIndex,
+            //         exerciseName: 'New Exercise',
+            //         reps : 1,
+            //         sets : 1,
+            //         weight : 1,
+            //     }
+            //     this.allNewExerciseData.push(this.exerciseRow);
+
+            //     }).catch((error) => {
+            //         console.error("There was an error: " +error);
+            //     })
+                
+            // },
             changeState() {
                 this.stateCurrent = !this.stateCurrent;
                 this.$store.commit('updateState', this.stateCurrent)
@@ -215,9 +222,7 @@ import '../css/currentWorkoutStyle.scss'
                 this.userId = getCookie.userId;
             },
             updateTime() {
-            
                 var startTime = localStorage.getItem("sessionStartTime");
-
                 this.currentTime = startTime;
 
                 setInterval(() => {
@@ -251,18 +256,26 @@ import '../css/currentWorkoutStyle.scss'
         },
         async mounted() {
             await this.retrieveExercises();
-            window.addEventListener('scroll', this.onScroll)
             this.updateTime();
             
         },
-        beforeDestroy () {
-            window.removeEventListener('scroll', this.onScroll)
-}
     }
 </script>
 
 <style lang="scss" scoped>
-
+    #currWorkoutContainer {
+        margin-bottom: 15vh;
+    }
+    .header {
+        background:linear-gradient(to bottom, #282121, #3f3939 50%);
+        img {
+            height: 80px;
+            display:block;
+            margin-left: auto;
+            margin-right: auto;
+            cursor: pointer;
+        }
+    }
     div > button {
         display:inline-block;
         cursor:pointer;
@@ -297,10 +310,8 @@ import '../css/currentWorkoutStyle.scss'
         display:inline-block;
         cursor:pointer;
         color:#ffffff;
-        font-family:Arial;
-        font-size:15px;
         font-weight:bold;
-        padding:6px 24px;
+        padding:6px 15px;
         margin-left: 10px;
         text-decoration:none;
         text-shadow:0px 1px 0px #b23e35;
@@ -310,21 +321,30 @@ import '../css/currentWorkoutStyle.scss'
         background-color:#1cc254;
         }
     }
-    
-    .navbar {
-        z-index:5;
-        height: 60px;
-        width: 100vw;
-        background: hsl(200, 50%, 50%);
-        position: fixed;
-        top:-60px;
-        box-shadow: 0 2px 15px rgba(71, 120, 120, 0.5);
-        transform: translate3d(0, 0, 0);
-        transition: 0.1s all ease-out;
+    .abortBtn {
+        box-shadow:inset 0px 1px 0px 0px #f7c5c0;
+        background:linear-gradient(to bottom, #f05f1c 5%, #ff0909 100%);
+        background-color:#fc8d83;
+        border-radius:6px;
+        border:1px solid #db8504;
+        display:inline-block;
+        cursor:pointer;
+        color:#ffffff;
+        font-weight:bold;
+        padding:6px 10px;
+        margin-left: 10px;
+        text-decoration:none;
+        text-shadow:0px 1px 0px #b23e35;
+    }
+    #timer {
+        display:block;
+        margin-left: auto;
+        margin-right: auto;
+        h1 {
+            font-size: 6rem;
+            text-align: center;
+            padding-top: 10vh;
         }
-    .navbar.navbar--hidden {
-        box-shadow: none;
-        transform: translate3d(0, +100%, 0);
-}
+    }
 
 </style>

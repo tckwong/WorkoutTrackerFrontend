@@ -15,15 +15,19 @@
                 id="input1"
                 v-model="email"
                 type="email"
+                :state="nameState"
                 placeholder="Enter email"
                 required
               ></b-form-input>
+              <b-form-invalid-feedback id="input-live-feedback">
+                Enter at least 3 letters
+              </b-form-invalid-feedback>
             </b-col>
           </b-form-group>
     
         <b-form-group id="inputGroup" label="Username:" label-for="input-2">
           <b-form-input
-            id="input1"
+            id="input2"
             v-model="username"
             placeholder="Enter username"
             required
@@ -32,8 +36,9 @@
 
         <b-form-group id="inputGroup" label="Password:" label-for="input-2">
           <b-form-input
-            id="input1"
+            id="input3"
             v-model="password"
+            type="password"
             placeholder="Enter password"
             required
           ></b-form-input>
@@ -62,6 +67,11 @@ export default {
                 
             }
     },
+    computed: {
+      nameState() {
+        return this.email.length > 2 ? true : false
+      }
+    },
     methods: {
         registerUser() {
             axios.request({
@@ -75,8 +85,7 @@ export default {
                     "username" : this.username,
                     "password" : this.password
                 }
-            }).then((response) => {
-                console.log(response)
+            }).then(() => {
                 this.$router.push({ name: 'Login' });
                 
             }).catch((error) => {
@@ -111,5 +120,18 @@ export default {
 
   .buttons:nth-child(2) {
     margin-right: 10px;
+  }
+
+  @media only screen and (min-width:700px) {
+    .formContainer {
+      padding-left: 20vw;
+      padding-right:20vw;
+    }
+  }
+  @media only screen and (min-width:1000px) {
+    .formContainer {
+      padding-left: 30vw;
+      padding-right:30vw;
+    }
   }
 </style>

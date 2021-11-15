@@ -2,7 +2,7 @@
     <section>
         <div>
             <h1 class="heading">LOG IN</h1>
-            <b-form inline>
+            <b-form class="formContainer" inline>
                 <label class="sr-only">email</label>
                 <b-form-input
                 class="w-80"
@@ -24,12 +24,12 @@
 
                 <b-form-checkbox 
                     class="mb-2 mr-sm-2 mb-sm-0"
-                    v-model="status"
+                    v-model="cb_status"
                     value="checked"
                     unchecked-value="not_checked"
                     
                     >Remember me</b-form-checkbox>
-                <b-button @click="loginUser" variant="primary">Save</b-button>
+                <button class="generalBtn" @click="loginUser">Log In</button>
             </b-form>
         </div>
         
@@ -47,7 +47,7 @@ export default {
             return {
                 password: null,
                 email: null,
-                status: 'not_checked'
+                cb_status: 'not_checked'
             }
     },
     methods: {
@@ -64,8 +64,10 @@ export default {
                 }
 
             }).then((response) => {
-                if (this.status === 'not_checked') {
-                    cookies.set('loginData', response.data, 0);
+                console.log(response);
+                console.log("working?");
+                if (this.cb_status == 'not_checked') {
+                    cookies.set('loginData', response.data);
                 }else {
                     cookies.set('loginData', response.data, '7d');
                 }
@@ -79,8 +81,40 @@ export default {
 }   
 </script>
 <style lang="scss" scoped>
-    section > div {
-    height: 100vh;
-    }
 
+    section > div {
+        height: 100vh;
+        }
+        .formContainer {
+        padding-left: 10vw;
+            padding-right:10vw;
+        }
+        .heading {
+        text-align: center;
+        padding-top: 10vh;
+        padding-bottom:5vh;
+        }
+        .buttons {
+        float: right;
+        margin-top: 20px;
+        }
+
+    .buttons:nth-child(2) {
+    margin-right: 10px;
+    }
+    .generalBtn{
+        margin-top: 10px;
+    }
+    @media only screen and (min-width:700px) {
+    .formContainer {
+        padding-left: 20vw;
+        padding-right:20vw;
+    }
+  }
+  @media only screen and (min-width:1000px) {
+    .formContainer {
+      padding-left: 30vw;
+      padding-right:30vw;
+  }
+  }
 </style>

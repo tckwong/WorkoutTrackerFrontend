@@ -1,18 +1,50 @@
-<router-link class="routerLink" :to="{ name: 'CurrentWorkout', params: { workout: workoutId }}"><b-button variant="outline-success">START WORKOUT</b-button></router-link>
+// // Scroll Navbar Code for later use //
 
-                        // "loginToken" : this.userToken,
-                        // "exerciseName" : this.getExerciseData.storeExerciseName,
-                        // "reps" : this.getExerciseData.storeRep,
-                        // "sets" : this.getExerciseData.storeSet,
-                        // "weight" : this.getExerciseData.storeWeight,
-                        // "workoutId" : this.workoutId
+// methods: {
+//     onScroll () {
+//         // Get the current scroll position
+//         const currentScrollPosition = window.pageYOffset || document.documentElement.scrollTop
+//         // Because of momentum scrolling on mobiles, we shouldn't continue if it is less than zero
+//         if (currentScrollPosition < 0) {
+//         return
+//         }
+//         this.showNavbar = currentScrollPosition < this.lastScrollPosition
+//         // Set the current scroll position as the last scroll position
+//         this.lastScrollPosition = currentScrollPosition
+//     },
+//     handleScroll () {
+//         if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+//         document.getElementById("navbar").style.top = "0";
+//         } else {
+//         document.getElementById("navbar").style.top = "-150px";
+//         }
+//     },
+
+// }
+
+// mounted() {
+//     window.addEventListener('scroll', this.onScroll)
+
+// }
+// beforeDestroy () {
+//     window.removeEventListener('scroll', this.onScroll)
+// }
 
 
- // const addKeyObj = {};
-                    // for (let i=0; i<response.data.length; i++){
-                    //     addKeyObj = {
-                    //         uniqueKey: i
-                    //     }
-                    // this.completedWorkoutData.push(addKeyObj);
-                    // }
-                    // console.log(response)
+// // CSS //
+
+// .navbar {
+//     z-index:5;
+//     height: 60px;
+//     width: 100vw;
+//     background: hsl(200, 50%, 50%);
+//     position: fixed;
+//     top:-60px;
+//     box-shadow: 0 2px 15px rgba(71, 120, 120, 0.5);
+//     transform: translate3d(0, 0, 0);
+//     transition: 0.1s all ease-out;
+//     }
+// .navbar.navbar--hidden {
+//     box-shadow: none;
+//     transform: translate3d(0, +100%, 0);
+// }

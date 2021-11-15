@@ -4,7 +4,6 @@
             <div class="desktopGrid">
                 <div class="flexContainer">
                     <img id="logo" src="@/assets/logo.png"/>
-        
                     <b-button @click="directToRegistrationPage" class="loginButton" pill variant="outline-danger">SIGN-UP</b-button>
                     <b-button @click="directToLoginPage" class="loginButton bottomBtn" pill variant="outline-danger">LOG IN</b-button>
                 </div>

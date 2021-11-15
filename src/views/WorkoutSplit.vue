@@ -1,8 +1,8 @@
 <template>
-    <div>
+    <section>
         <Header/>
         <WorkoutSplitMain/>
-    </div> 
+    </section> 
 </template>
 
 <script>

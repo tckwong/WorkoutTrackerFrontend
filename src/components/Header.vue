@@ -2,7 +2,7 @@
 <section>
     <div class="wrapper">
         <div>
-            <img id="logo" src="@/assets/logo.png"/>
+            <img id="logo" src="@/assets/logo.png" alt="logo"/>
         </div>
     </div>
 </section>
@@ -12,7 +12,7 @@
 <script>
 import axios from 'axios'
 import cookies from 'vue-cookies'
-import '../css/headerStyle.scss'
+
     export default {
         name: 'Header',
         methods: {
@@ -50,16 +50,6 @@ import '../css/headerStyle.scss'
         position:relative;
         margin-left:auto;
         margin-right:auto;
-        height: 300px;
+        height: 250px;
     }
-    h1:before {
-        position:absolute;
-        content: "";
-        top:130px;
-        left:20px;
-        display: block;
-        width: 25vw;
-        padding-top: 10px;
-        border-bottom: 1px solid white;
-        }
 </style>

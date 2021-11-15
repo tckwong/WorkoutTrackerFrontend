@@ -1,8 +1,8 @@
 <template>
     <div>
         <div class="flexContainer">
-            <h1>{{ workoutTitle }}</h1>
-            <img @click="goBack" src="@/assets/undoIcon.png" alt="back icon">
+            <h1>{{ workoutTitle }}</h1><button :disabled="isDisabled" @click="checkforSession" id="startBtn" class="generalBtn">START WORKOUT</button>
+            <img id="backBtn" @click="goBack" src="@/assets/undoIcon.png" alt="back icon">
         </div>
         
         <WorkoutTemplateChild v-for="exercise in allExerciseData" 
@@ -29,13 +29,14 @@
         :stateNew="stateNew"
         @notifyToRemoveDataOnly="removeExerciseNew"
         />
-        <button v-b-modal.modal-center @click="addExercise" class="generalBtn">ADD EXERCISE</button>
-        <button @click="checkforSession" class="generalBtn">START WORKOUT</button>
-
-        <b-modal v-model="showModal" title="There is an existing workout session" button-size="lg">
+        <div class="buttonMenu">
+            <button @click="addExercise" class="generalBtn">+</button>
+            
+        </div>
+        <b-modal class = "modal" hide-footer v-model="showModal" title="There is an existing workout session" button-size="lg">
             <p class="my-2">Do you want to resume current workout or start a new workout?</p>
-            <button @click="resumeWorkout">Resume Workout</button>
-            <button @click="startNewWorkout">New Workout</button>
+            <button class="generalBtn" @click="resumeWorkout">Resume Workout</button>
+            <button class="generalBtn" @click="startNewWorkout">New Workout</button>
         </b-modal>
     </div>
 </template>
@@ -72,7 +73,12 @@ import WorkoutTemplateChildNewData from '@/components/WorkoutTemplateChildNewDat
         computed: {
             getExerciseData: function() {
                 return this.$store.state.items
-            }
+            },
+        
+            isDisabled() {
+                return this.allNewExerciseData.length === 0 && this.allExerciseData.length === 0;
+            },
+
         },
         methods: {
             removeExerciseNew(index) {
@@ -88,6 +94,7 @@ import WorkoutTemplateChildNewData from '@/components/WorkoutTemplateChildNewDat
             resumeWorkout() {
                 this.$router.push({ name: 'CurrentWorkout' })
             },
+            // Only run if existing workout is active
             startNewWorkout() {
                 axios.request({
                     url: `${process.env.VUE_APP_BASE_DOMAIN}/api/workout-session`,
@@ -226,7 +233,7 @@ import WorkoutTemplateChildNewData from '@/components/WorkoutTemplateChildNewDat
 
     .flexContainer {
         display: grid;
-        grid-template-columns: 1fr .15fr;
+        grid-template-columns: 1fr 1fr .4fr;
         background-color: #282121;
         height: 10vh;
         h1 {
@@ -238,7 +245,36 @@ import WorkoutTemplateChildNewData from '@/components/WorkoutTemplateChildNewDat
         align-self: center;
         filter: invert(100%);
         cursor: pointer;
+        }
     }
+    .buttonMenu {
+        position: fixed;
+        bottom:10px;
+        right:50vw;
+        button {
+            width:50px;
+        }
     }
-    
+    #startBtn {
+        width: 70%;
+        height: 80%;
+        align-self: center;
+        justify-self: center;
+    }
+    #backBtn {
+        margin-right: 2px;
+        align-self: center;
+        justify-self: center;
+
+        
+    }
+    #backBtn:hover {
+            transform: scale(1.2);
+        }
+
+    .modal {
+        button {
+            margin-left: 20px;
+        }
+    }
 </style>

@@ -2,7 +2,6 @@
     <section>
         <div>
             <h3>{{exerciseNameP}}</h3>
-            <!-- <b-button v-b-toggle="'collapse-'+index" class="m-1">Show More</b-button> -->
             <b-collapse :visible="collapsedVisible ? true : false" accordion="my-accordion" role="tabpanel">
                 <b-card
                     header-text-variant="white"
@@ -11,13 +10,18 @@
                     style="max-width: 100vw;"
                 >
                 <b-col sm="3">
-                    <b-card-title>{{ storeInfo.exerciseName }}</b-card-title>
+                    
+                    <b-card-title class="cardHeading">
+                        <button :class="{isVisible : isActive}" id="PreviousBtn" @click="notifyChangeFocusPrev">Prev</button>
+                        <h4>{{ storeInfo.exerciseName }}</h4>
+                        <button :class="{isVisibleNext : isActiveNext}" @click="notifyChangeFocusNext">Next</button>
+                    </b-card-title>
                 </b-col>
                 <div class="grid-container">
+                    
                     <p>Reps:</p>
                     <p>Sets:</p>
-                    <p>Weight:</p>
-                    <b-button @click="notifyChangeFocusNext" class="m-1">Next</b-button>
+                    <p>Weight(lbs):</p>
                     <b-col class="inputBoxWidth" sm="2">
                         <b-row>
                             <b-form-input id="inline-form" v-model="storeInfo.reps" placeholder="0"></b-form-input>
@@ -63,7 +67,8 @@ import cookies from 'vue-cookies'
             setsP : Number,
             weightP : Number,
             userIdP : Number,
-            collapsedVisible : Boolean
+            collapsedVisible : Boolean,
+            length : Number
         },
 
         data: () => {
@@ -72,6 +77,8 @@ import cookies from 'vue-cookies'
                 exerciseRow : {},
                 workoutId : null,
                 userToken : null,
+                isActive : false,
+                isActiveNext : false,
 
                 storeInfo : {
                     workoutId: null,
@@ -88,10 +95,12 @@ import cookies from 'vue-cookies'
         computed: {
             getCurrState() {
                 return this.$store.state.currentState
-            }
-
+            },
         },
         methods: {
+            notifyChangeFocusPrev() {
+                this.$emit('notifyChangeFocusPrev',this.index);
+            },
             notifyChangeFocusNext() {
                 this.$emit('notifyChangeFocusNext',this.index);
             },
@@ -141,7 +150,7 @@ import cookies from 'vue-cookies'
             decrementRepsBy1() {
                 this.storeInfo.reps --
             },
-            incrementSetsBy1() {
+            incrementSetsBy1() {                
                 this.storeInfo.sets ++
             },
             decrementSetsBy1() {
@@ -158,26 +167,50 @@ import cookies from 'vue-cookies'
                 this.userToken = getCookie.loginToken;
                 
             },
+            checkIndex() {
+                this.index === 0 ? this.isActive = true : this.isActive = false;
+            },
+            checkIndexNext() {
+                this.index === this.length-1 ? this.isActiveNext = true : this.isActiveNext = false;
+            }
         },
         mounted() {
             this.getMyCookies();
             this.initialData();
+            this.checkIndex();
+            this.checkIndexNext();
+            
         },
         watch: {
             getCurrState () {
                 this.addDataToStore();
-            }
+            },
+            expandAccordian() {
+                console.log("watcher fired");
+                if(this.index === 0){
+                    this.isActive = true;
+                }
+            },
         }
     }
 </script>
 
 <style lang="scss" scoped>
+
     .grid-container {
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        grid-template-rows: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: .2fr 1fr;
+
         p {
             display: inline-block;
+            align-self: end;
+        }
+        .generalBtn {
+            height: 40px;
+            grid-column: 4/5;
+            grid-row: 1/3;
+            align-self: center;
         }
         
     }
@@ -193,7 +226,52 @@ import cookies from 'vue-cookies'
         width: 50px;
     }
     h3 {
-        color: white;
+        margin-left: 5px;
+        color: rgb(202, 195, 195);
+        padding: 20px 0;
+    }
+
+    // Increment counter buttons
+    .incrementbtn1 {
+        box-shadow:inset 0px 1px 0px 0px #ffffff;
+        background:linear-gradient(to bottom, #ffffff 5%, #f6f6f6 100%);
+        background-color:#ffffff;
+        border-radius:6px;
+        border:1px solid #dcdcdc;
+        display:inline-block;
+        cursor:pointer;
+        color:#666666;
+        padding:6px 24px;
+        text-decoration:none;
+        text-shadow:0px 1px 0px #ffffff;
+    }
+    .incrementbtn1:hover {
+        background:linear-gradient(to bottom, #f6f6f6 5%, #ffffff 100%);
+        background-color:#f6f6f6;
+        }
+        .incrementbtn1:active {
+        position:relative;
+        top:1px;
+    }
+    .cardHeading {
+        display: grid;
+        grid-template-columns: .3fr 1fr .3fr;
+        width: 100%;
+        justify-content: center;
+        align-content: center;
+
+        h4 {
+            display: inline-block;
+            text-align: center;
+        }
+    }
+    .isVisible {
+        opacity: 0%;
+        pointer-events: none;
+    }
+    .isVisibleNext {
+        opacity: 0%;
+        pointer-events: none;
     }
     
 </style>
