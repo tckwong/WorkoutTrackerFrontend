@@ -24,7 +24,7 @@
 
                 <b-form-checkbox 
                     class="mb-2 mr-sm-2 mb-sm-0"
-                    v-model="cb_status"
+                    v-model="status"
                     value="checked"
                     unchecked-value="not_checked"
                     
@@ -47,7 +47,7 @@ export default {
             return {
                 password: null,
                 email: null,
-                cb_status: 'not_checked'
+                status: 'not_checked'
             }
     },
     methods: {
@@ -66,8 +66,8 @@ export default {
             }).then((response) => {
                 console.log(response);
                 console.log("working?");
-                if (this.cb_status == 'not_checked') {
-                    cookies.set('loginData', response.data);
+                if (this.status === 'not_checked') {
+                    cookies.set('loginData', response.data, 0);
                 }else {
                     cookies.set('loginData', response.data, '7d');
                 }
