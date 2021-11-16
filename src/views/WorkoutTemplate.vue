@@ -84,6 +84,7 @@ import WorkoutTemplateChildNewData from '@/components/WorkoutTemplateChildNewDat
             isDisabled() {
                 return (this.allNewExerciseData.length === 0 && this.allExerciseData.length === 0) || this.$refs.handleChange===true;
             },
+            
         },
         methods: {
             removeExerciseNew(index) {

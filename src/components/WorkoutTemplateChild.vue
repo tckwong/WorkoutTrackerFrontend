@@ -15,7 +15,7 @@
         <div class="grid-container">
             <p>Reps:</p>
             <p>Sets:</p>
-            <p>Weight:</p>
+            <p>Weight(lbs):</p>
             <b-button @click="deleteExercise">X</b-button>
             <b-col class="inputBoxWidth" sm="2">
                 <b-form-input @input="handleChange = true" v-model="storeInfo.reps" placeholder="0"></b-form-input>

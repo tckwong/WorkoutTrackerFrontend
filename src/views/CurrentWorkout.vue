@@ -25,11 +25,9 @@
             <h1>{{ hours }}:{{minutes}}:{{ seconds }}</h1>
         </div>
 
-        <div class="bottomNavContainer">
-                <ul>
-                    <li><button @click="abortWorkout" class="abortBtn">ABORT WORKOUT</button></li>
-                    <li><button @click="changeState" class="finishBtn">FINISH WORKOUT</button></li>
-                </ul>
+        <div class="bottomMenu">
+            <button @click="abortWorkout" class="abortBtn">ABORT WORKOUT</button>
+            <button @click="changeState" class="finishBtn">FINISH WORKOUT</button>
         </div>
         
     </div>
@@ -114,31 +112,6 @@ import CurrentWorkoutChild from '@/components/CurrentWorkoutChild.vue'
                     console.error("There was an error: " +error);
                 })
             },
-            // addExercise() {
-            //     axios.request({
-            //         url: `${process.env.VUE_APP_BASE_DOMAIN}/api/exercises`,
-            //         method: 'POST',
-            //         data : {
-            //             "loginToken" : this.userToken,
-            //             "workoutId" : this.$route.params.workout,
-
-            //         }
-            //     }).then((response) => {
-                    
-            //         this.exerciseRow = {
-            //         exerciseIndex : this.addedExerciseIndex,
-            //         exerciseName: 'New Exercise',
-            //         reps : 1,
-            //         sets : 1,
-            //         weight : 1,
-            //     }
-            //     this.allNewExerciseData.push(this.exerciseRow);
-
-            //     }).catch((error) => {
-            //         console.error("There was an error: " +error);
-            //     })
-                
-            // },
             changeState() {
                 this.stateCurrent = !this.stateCurrent;
                 this.$store.commit('updateState', this.stateCurrent)
@@ -342,4 +315,23 @@ import CurrentWorkoutChild from '@/components/CurrentWorkoutChild.vue'
         }
     }
 
+    .bottomMenu {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        position:fixed;
+        width:100vw;
+        height:10vh;
+        position: fixed;
+        bottom:0;
+        background-color: #282121;
+        border: 1px solid #e28445;
+        border-top-left-radius: 15px;
+        border-top-right-radius: 15px;
+    }
+        
+        
+    @media only screen and (min-width:700px) {
+
+    }
+        
 </style>

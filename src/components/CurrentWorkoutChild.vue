@@ -9,39 +9,37 @@
                     header-bg-variant="dark"
                     style="max-width: 100vw;"
                 >
-                <b-col sm="3">
-                    
+                <b-col sm="12" md="12" lg="10">
                     <b-card-title class="cardHeading">
-                        <button :class="{isVisible : isActive}" id="PreviousBtn" @click="notifyChangeFocusPrev">Prev</button>
+                        <button :class="{isVisible : isActive}" id="PreviousBtn" @click="notifyChangeFocusPrev" class="generalBtn">Prev</button>
                         <h4>{{ storeInfo.exerciseName }}</h4>
-                        <button :class="{isVisibleNext : isActiveNext}" @click="notifyChangeFocusNext">Next</button>
+                        <button :class="{isVisibleNext : isActiveNext}" @click="notifyChangeFocusNext" class="generalBtn">Next</button>
                     </b-card-title>
                 </b-col>
                 <div class="grid-container">
-                    
                     <p>Reps:</p>
                     <p>Sets:</p>
                     <p>Weight(lbs):</p>
                     <b-col class="inputBoxWidth" sm="2">
                         <b-row>
-                            <b-form-input id="inline-form" v-model="storeInfo.reps" placeholder="0"></b-form-input>
+                            <b-form-input type="number" id="inline-form" v-model="storeInfo.reps" placeholder="0" :min="0"></b-form-input>
                             <button @click="incrementRepsBy1" class="incrementbtn1">+1</button>
-                            <button @click="decrementRepsBy1" class="incrementbtn1">-1</button>
+                            <button :disabled="disableRepsBtn" @click="decrementRepsBy1" class="incrementbtn1">-1</button>
                         </b-row>
                     </b-col>
 
                     <b-col class="inputBoxWidth" sm="2">
                         <b-row>
-                            <b-form-input v-model="storeInfo.sets" placeholder="0"></b-form-input>
+                            <b-form-input type="number" v-model="storeInfo.sets" placeholder="0" min="0"></b-form-input>
                             <button @click="incrementSetsBy1" class="incrementbtn1">+1</button>
-                            <button @click="decrementSetsBy1" class="incrementbtn1">-1</button>
+                            <button :disabled="disableSetsBtn" @click="decrementSetsBy1" class="incrementbtn1">-1</button>
                         </b-row>
                     </b-col>
                     <b-col class="inputBoxWidth" sm="2">
                         <b-row>
-                            <b-form-input v-model="storeInfo.weight" placeholder="0"></b-form-input>
+                            <b-form-input type="number" v-model="storeInfo.weight" placeholder="0" :min="0"></b-form-input>
                             <button @click="incrementWeightBy5" class="incrementbtn1">+5</button>
-                            <button @click="decrementWeightBy5" class="incrementbtn1">-5</button>
+                            <button :disabled="disableWeightBtn" @click="decrementWeightBy5" class="incrementbtn1">-5</button>
                         </b-row>
                     </b-col>
                 </div>
@@ -95,6 +93,16 @@ import cookies from 'vue-cookies'
         computed: {
             getCurrState() {
                 return this.$store.state.currentState
+            },
+            // Disables the increment button when these variables are value 0
+            disableRepsBtn() {
+                return this.storeInfo.reps===0
+            },
+            disableSetsBtn() {
+                return this.storeInfo.sets===0
+            },
+            disableWeightBtn() {
+                return this.storeInfo.weight===0
             },
         },
         methods: {
@@ -196,15 +204,15 @@ import cookies from 'vue-cookies'
 </script>
 
 <style lang="scss" scoped>
-
     .grid-container {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         grid-template-rows: .2fr 1fr;
+        justify-content: center;
+        width: 100vw;
 
         p {
             display: inline-block;
-            align-self: end;
         }
         .generalBtn {
             height: 40px;
@@ -273,5 +281,16 @@ import cookies from 'vue-cookies'
         opacity: 0%;
         pointer-events: none;
     }
+    @media only screen and (min-width:700px) {
+        section {
+            margin-left: 15vw;
+            margin-right: 15vw;
+
+        }
+        .grid-container {
+            width: 80vw;
+        }
+    }
+
     
 </style>
