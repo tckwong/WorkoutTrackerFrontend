@@ -93,7 +93,6 @@ import WorkoutSplitChild from './WorkoutSplitChild.vue'
                 axios.request({
                     url: `${process.env.VUE_APP_BASE_DOMAIN}/api/users`,
                     method: 'GET'
-                    
                 }).then((response) => {
                     const foundUser = response.data.filter(element => element.email === this.userEmail);
                     this.userId = foundUser[0].userId

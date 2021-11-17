@@ -82,7 +82,7 @@ import WorkoutHistoryChild from '@/components/WorkoutHistoryChild.vue'
 
 <style lang="scss" scoped>
     section {
-        margin-bottom:5vh;
+        margin-bottom:10vh;
     }
     h1 {
         color: #e06a1c;
